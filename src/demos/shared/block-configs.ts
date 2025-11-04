@@ -9,7 +9,12 @@ import ImageBlock from '../vue3/components/ImageBlock.vue'
 import ButtonBlock from '../vue3/components/ButtonBlock.vue'
 import SliderBlock from '../vue3/components/SliderBlock.vue'
 import CardsBlock from '../vue3/components/CardsBlock.vue'
+// @ts-ignore - Vue SFC components with <script setup> are properly handled by build tools
 import LinkBlock from '../vue3/components/LinkBlock.vue'
+// @ts-ignore - Vue SFC components with <script setup> are properly handled by build tools
+import WysiwygBlock from '../vue3/components/WysiwygBlock.vue'
+// @ts-ignore - Vue SFC components with <script setup> are properly handled by build tools
+import ApiSelectBlock from '../vue3/components/ApiSelectBlock.vue'
 
 export const demoBlockConfigs = {
   text: {
@@ -37,11 +42,7 @@ export const demoBlockConfigs = {
         field: 'fontSize',
         label: 'Размер шрифта',
         type: 'number',
-        rules: [
-          { type: 'required' },
-          { type: 'min', value: 8 },
-          { type: 'max', value: 72 }
-        ],
+        rules: [{ type: 'min', value: 12 }, { type: 'max', value: 48 }],
         defaultValue: 16
       },
       {
@@ -466,6 +467,185 @@ export const demoBlockConfigs = {
         placeholder: '12px 24px',
         rules: [],
         defaultValue: '12px 24px'
+      }
+    ],
+    spacingOptions: {
+      config: {
+        min: 0,
+        max: 120,
+        step: 8,
+        breakpoints: [
+          { name: 'xlarge', label: 'XL (Desktop)', maxWidth: undefined },
+          { name: 'large', label: 'L (Laptop)', maxWidth: 1440 },
+          { name: 'medium', label: 'M (Tablet)', maxWidth: 1024 },
+          { name: 'small', label: 'S (Mobile)', maxWidth: 640 }
+        ]
+      }
+    }
+  },
+
+  wysiwyg: {
+    title: 'Визуальный редактор',
+    icon: '✏️',
+    description: 'Блок с визуальным редактором для форматированного текста',
+    render: {
+      kind: 'component',
+      framework: 'vue',
+      component: WysiwygBlock
+    },
+    fields: [
+      {
+        field: 'content',
+        label: 'Содержимое',
+        type: 'custom',
+        customFieldConfig: {
+          rendererId: 'wysiwyg-editor'
+        },
+        rules: [{ type: 'required' }],
+        defaultValue: '<p>Введите ваш текст здесь...</p>'
+      },
+      {
+        field: 'fontSize',
+        label: 'Размер шрифта',
+        type: 'number',
+        rules: [{ type: 'min', value: 12 }, { type: 'max', value: 48 }],
+        defaultValue: 16
+      },
+      {
+        field: 'textColor',
+        label: 'Цвет текста',
+        type: 'color',
+        rules: [],
+        defaultValue: '#333333'
+      },
+      {
+        field: 'textAlign',
+        label: 'Выравнивание',
+        type: 'select',
+        options: [
+          { value: 'left', label: 'По левому краю' },
+          { value: 'center', label: 'По центру' },
+          { value: 'right', label: 'По правому краю' },
+          { value: 'justify', label: 'По ширине' }
+        ],
+        defaultValue: 'left'
+      },
+      {
+        field: 'padding',
+        label: 'Внутренние отступы',
+        type: 'text',
+        placeholder: '20px',
+        rules: [],
+        defaultValue: '20px'
+      }
+    ]
+  },
+
+  apiSelect: {
+    title: 'Блок с API Select',
+    icon: '🔌',
+    description: 'Блок для выбора элементов через API (одиночный и множественный выбор)',
+    render: {
+      kind: 'component',
+      framework: 'vue',
+      component: ApiSelectBlock
+    },
+    fields: [
+      {
+        field: 'title',
+        label: 'Заголовок секции',
+        type: 'text',
+        placeholder: 'Выбранные элементы',
+        rules: [{ type: 'required' }],
+        defaultValue: 'Выбранные элементы'
+      },
+      {
+        field: 'featuredItemId',
+        label: 'Главный элемент',
+        type: 'api-select',
+        rules: [{ type: 'required' }],
+        defaultValue: null,
+        apiSelectConfig: {
+          url: '/api/items',
+          method: 'GET',
+          multiple: false,
+          placeholder: 'Начните вводить для поиска...',
+          searchParam: 'search',
+          pageParam: 'page',
+          limitParam: 'limit',
+          limit: 10,
+          debounceMs: 300,
+          idField: 'id',
+          nameField: 'name',
+          descriptionField: 'description',
+          minSearchLength: 0,
+          loadingText: 'Загрузка элементов...',
+          noResultsText: 'Элементы не найдены',
+          errorText: 'Ошибка загрузки элементов',
+          responseMapper: (response: any) => ({
+            data: response.data?.data || response.data || [],
+            total: response.data?.pagination?.total || response.data?.total || 0,
+            page: response.data?.pagination?.page || response.data?.page || 1,
+            hasMore: response.data?.pagination?.hasMore || response.data?.hasMore || false
+          })
+        }
+      },
+      {
+        field: 'selectedItemIds',
+        label: 'Список элементов для отображения',
+        type: 'api-select',
+        rules: [{ type: 'required' }],
+        defaultValue: [],
+        apiSelectConfig: {
+          url: '/api/items',
+          method: 'GET',
+          multiple: true,
+          placeholder: 'Выберите элементы...',
+          searchParam: 'search',
+          pageParam: 'page',
+          limitParam: 'limit',
+          limit: 10,
+          debounceMs: 300,
+          idField: 'id',
+          nameField: 'name',
+          descriptionField: 'description',
+          minSearchLength: 0,
+          loadingText: 'Загрузка...',
+          noResultsText: 'Ничего не найдено',
+          errorText: 'Ошибка загрузки',
+          responseMapper: (response: any) => ({
+            data: response.data?.data || response.data || [],
+            total: response.data?.pagination?.total || response.data?.total || 0,
+            page: response.data?.pagination?.page || response.data?.page || 1,
+            hasMore: response.data?.pagination?.hasMore || response.data?.hasMore || false
+          })
+        }
+      },
+      {
+        field: 'columns',
+        label: 'Количество колонок',
+        type: 'select',
+        options: [
+          { value: 1, label: '1 колонка' },
+          { value: 2, label: '2 колонки' },
+          { value: 3, label: '3 колонки' }
+        ],
+        rules: [],
+        defaultValue: 2
+      },
+      {
+        field: 'backgroundColor',
+        label: 'Цвет фона',
+        type: 'color',
+        rules: [],
+        defaultValue: '#f8f9fa'
+      },
+      {
+        field: 'textColor',
+        label: 'Цвет текста',
+        type: 'color',
+        rules: [],
+        defaultValue: '#333333'
       }
     ],
     spacingOptions: {

@@ -99,7 +99,9 @@ const loadSavedBlocks = () => {
   return [];
 };
 
-const initialBlocks = ref(loadSavedBlocks());
+
+const saved = loadSavedBlocks();
+const initialBlocks = ref(saved?.length > 0 ? saved : []);
 
 const handleSave = async (blocks: any[]) => {
   try {

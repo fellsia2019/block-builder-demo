@@ -72,22 +72,6 @@ export async function initPureJsDemo(container: HTMLElement): Promise<() => void
     // Регистрируем кастомный WYSIWYG редактор
     blockBuilder.registerCustomFieldRenderer(new WysiwygFieldRenderer());
 
-    // Добавляем начальный блок для демонстрации, только если нет сохраненных блоков
-    if (savedBlocks.length === 0) {
-      setTimeout(() => {
-        blockBuilder.createBlock({
-          type: 'text',
-          settings: {},
-          props: {
-            content: 'Привет! Это Pure JS демо. Попробуйте отредактировать этот блок!',
-            fontSize: 18,
-            color: '#1eb300',
-            textAlign: 'center',
-          },
-        });
-      }, 100);
-    }
-
     // Cleanup функция
     return () => {
       container.innerHTML = '';

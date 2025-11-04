@@ -46,7 +46,7 @@ export const pureJsBlockConfigs = {
         field: 'fontSize',
         label: 'Размер шрифта',
         type: 'number',
-        rules: [{ type: 'min', value: 12 }, { type: 'max', value: 48 }],
+        rules: [{ type: 'min', value: 12, message: 'Минимальный размер: 12px' }, { type: 'max', value: 48, message: 'Максимальный размер: 48px' }],
         defaultValue: 16
       },
       {
@@ -375,5 +375,172 @@ export const pureJsBlockConfigs = {
     ]
   },
 
+  apiSelect: {
+    title: 'Блок с API Select',
+    icon: '🔌',
+    description: 'Блок для выбора элементов через API (одиночный и множественный выбор)',
+    render: {
+      kind: 'html',
+      template: (props: any) => {
+        const featuredItemId = props.featuredItemId;
+        const selectedItemIds = props.selectedItemIds || [];
+        const columns = props.columns || 2;
+        const bgColor = props.backgroundColor || '#f8f9fa';
+        const textColor = props.textColor || '#333333';
+
+        let html = `
+          <div>
+            <div class="container">
+              <div style="
+                padding: 20px;
+                background: ${bgColor};
+                color: ${textColor};
+                border-radius: 8px;
+              ">
+                ${props.title ? `<h2 style="margin: 0 0 30px 0; font-size: 28px; font-weight: 700;">${props.title}</h2>` : ''}
+        `;
+
+        if (featuredItemId) {
+          html += `
+            <div style="margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+              <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">🌟 Главный элемент (ID: ${featuredItemId}):</h3>
+              <div style="padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white;">
+                <p style="margin: 0; opacity: 0.9;">
+                  В реальном приложении здесь будут данные, загруженные из API по ID: ${featuredItemId}
+                </p>
+              </div>
+            </div>
+          `;
+        }
+
+        if (selectedItemIds.length > 0) {
+          html += `
+            <div>
+              <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">📋 Выбранные элементы (${selectedItemIds.length}):</h3>
+              <div style="display: grid; grid-template-columns: repeat(${columns}, 1fr); gap: 20px;">
+                ${selectedItemIds.map((id: string | number) => `
+                  <div style="padding: 20px; background: rgba(255,255,255,0.8); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <h4 style="margin: 0 0 10px 0; font-size: 18px; font-weight: 600;">Элемент ID: ${id}</h4>
+                    <p style="margin: 0; font-size: 14px; opacity: 0.8; line-height: 1.5;">
+                      Данные будут загружены из вашего API в реальном приложении
+                    </p>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+
+        if (!featuredItemId && selectedItemIds.length === 0) {
+          html += `
+            <div style="text-align: center; padding: 40px; opacity: 0.6; font-style: italic;">
+              Элементы не выбраны. Настройте блок в редакторе.
+            </div>
+          `;
+        }
+
+        html += '</div></div></div>';
+        return html;
+      }
+    },
+    fields: [
+      {
+        field: 'title',
+        label: 'Заголовок секции',
+        type: 'text',
+        placeholder: 'Выбранные элементы',
+        rules: [{ type: 'required' }],
+        defaultValue: 'Выбранные элементы'
+      },
+      {
+        field: 'featuredItemId',
+        label: 'Главный элемент',
+        type: 'api-select',
+        rules: [{ type: 'required' }],
+        defaultValue: null,
+        apiSelectConfig: {
+          url: '/api/items',
+          method: 'GET',
+          multiple: false,
+          placeholder: 'Начните вводить для поиска...',
+          searchParam: 'search',
+          pageParam: 'page',
+          limitParam: 'limit',
+          limit: 10,
+          debounceMs: 300,
+          idField: 'id',
+          nameField: 'name',
+          descriptionField: 'description',
+          minSearchLength: 0,
+          loadingText: 'Загрузка элементов...',
+          noResultsText: 'Элементы не найдены',
+          errorText: 'Ошибка загрузки элементов',
+          responseMapper: (response: any) => ({
+            data: response.data?.data || response.data || [],
+            total: response.data?.pagination?.total || response.data?.total || 0,
+            page: response.data?.pagination?.page || response.data?.page || 1,
+            hasMore: response.data?.pagination?.hasMore || response.data?.hasMore || false
+          })
+        }
+      },
+      {
+        field: 'selectedItemIds',
+        label: 'Список элементов для отображения',
+        type: 'api-select',
+        rules: [{ type: 'required' }],
+        defaultValue: [],
+        apiSelectConfig: {
+          url: '/api/items',
+          method: 'GET',
+          multiple: true,
+          placeholder: 'Выберите элементы...',
+          searchParam: 'search',
+          pageParam: 'page',
+          limitParam: 'limit',
+          limit: 10,
+          debounceMs: 300,
+          idField: 'id',
+          nameField: 'name',
+          descriptionField: 'description',
+          minSearchLength: 0,
+          loadingText: 'Загрузка...',
+          noResultsText: 'Ничего не найдено',
+          errorText: 'Ошибка загрузки',
+          responseMapper: (response: any) => ({
+            data: response.data?.data || response.data || [],
+            total: response.data?.pagination?.total || response.data?.total || 0,
+            page: response.data?.pagination?.page || response.data?.page || 1,
+            hasMore: response.data?.pagination?.hasMore || response.data?.hasMore || false
+          })
+        }
+      },
+      {
+        field: 'columns',
+        label: 'Количество колонок',
+        type: 'select',
+        options: [
+          { value: 1, label: '1 колонка' },
+          { value: 2, label: '2 колонки' },
+          { value: 3, label: '3 колонки' }
+        ],
+        rules: [],
+        defaultValue: 2
+      },
+      {
+        field: 'backgroundColor',
+        label: 'Цвет фона',
+        type: 'color',
+        rules: [],
+        defaultValue: '#f8f9fa'
+      },
+      {
+        field: 'textColor',
+        label: 'Цвет текста',
+        type: 'color',
+        rules: [],
+        defaultValue: '#333333'
+      }
+    ]
+  }
 };
 
