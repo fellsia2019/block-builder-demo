@@ -40,31 +40,4 @@ docker run -p 8080:80 block-builder-demos
 
 Откроется на http://localhost:8080
 
-## 📦 Структура
 
-```
-demo-bb/
-├── src/
-│   ├── demos/
-│   │   ├── vue3/          # Vue3 демо компоненты
-│   │   ├── pure-js/       # Pure JS демо
-│   │   └── shared/        # Общие конфигурации
-│   └── pages/              # Страницы роутера
-├── index.html              # Главная страница
-└── vite.config.ts          # Конфигурация Vite
-```
-
-## 🔗 Интеграция с Landing
-
-Демо можно интегрировать в landing проект через:
-- iframe: `<iframe src="https://demos.block-builder.ru/vue3" />`
-- Прямые ссылки на демо
-- API для встраивания компонентов
-
-## 🛠 Технологии
-
-- **Vite** - быстрый dev сервер и сборщик
-- **Vue 3** - для Vue демо
-- **React** - для React демо (в будущем)
-- **TypeScript** - типизация
-- **Docker + Nginx** - продакшн деплой

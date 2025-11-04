@@ -4,12 +4,7 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'demo-bb/**'
   workflow_dispatch:
-
-env:
-  PROJECT_DIR: demo-bb
 
 jobs:
   build-and-deploy:
@@ -24,7 +19,6 @@ jobs:
 
       - name: Build Docker image
         run: |
-          cd ${{ env.PROJECT_DIR }}
           docker build -t block-builder-demo-bb:${{ github.sha }} -t block-builder-demo-bb:latest -f Dockerfile .
 
       - name: Save Docker image to tar
@@ -36,22 +30,21 @@ jobs:
 
       - name: Prepare files for deployment
         run: |
-          cd ${{ env.PROJECT_DIR }}
-          mkdir -p ../deploy-temp
+          mkdir -p deploy-temp
           
           # Copy necessary files
-          cp -r public ../deploy-temp/ || true
-          cp package.json ../deploy-temp/ || true
-          cp package-lock.json ../deploy-temp/ || true
-          cp nginx.conf ../deploy-temp/ || true
-          cp docker-compose.prod.yml ../deploy-temp/ || true
-          [ -f .dockerignore ] && cp .dockerignore ../deploy-temp/ || true
+          cp -r public deploy-temp/ || true
+          cp package.json deploy-temp/ || true
+          cp package-lock.json deploy-temp/ || true
+          cp nginx.conf deploy-temp/ || true
+          cp docker-compose.prod.yml deploy-temp/ || true
+          [ -f .dockerignore ] && cp .dockerignore deploy-temp/ || true
           
           # List copied files for debugging
           echo "Files in deploy-temp:"
-          ls -la ../deploy-temp/
+          ls -la deploy-temp/
           
-          chmod -R 755 ../deploy-temp
+          chmod -R 755 deploy-temp
 
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.7
