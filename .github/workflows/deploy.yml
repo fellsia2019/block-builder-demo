@@ -46,6 +46,20 @@ jobs:
           
           chmod -R 755 deploy-temp
 
+      - name: Create directory on server
+        run: |
+          echo "${{ secrets.VDS_SSH_KEY }}" > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+          
+          ssh -o StrictHostKeyChecking=no \
+              -o UserKnownHostsFile=/dev/null \
+              -p ${{ secrets.VDS_SSH_PORT || 22 }} \
+              -i /tmp/deploy_key \
+              ${{ secrets.VDS_USER }}@${{ secrets.VDS_HOST }} \
+              "mkdir -p /opt/demo-bb || echo 'Directory may already exist or needs sudo. Please create manually: sudo mkdir -p /opt/demo-bb && sudo chown ${{ secrets.VDS_USER }}:${{ secrets.VDS_USER }} /opt/demo-bb'"
+          
+          rm -f /tmp/deploy_key
+
       - name: Copy files to server
         uses: appleboy/scp-action@v0.1.7
         with:
