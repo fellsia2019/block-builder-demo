@@ -1,0 +1,42 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="blockGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="blockGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="blockGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EC4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DB2777;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Блок 1 - большой вертикальный -->
+  <rect x="2" y="6" width="10" height="18" rx="2" fill="url(#blockGradient1)"/>
+  
+  <!-- Блок 2 - средний горизонтальный -->
+  <rect x="14" y="2" width="14" height="10" rx="2" fill="url(#blockGradient2)"/>
+  
+  <!-- Блок 3 - маленький квадрат -->
+  <rect x="30" y="14" width="8" height="8" rx="2" fill="url(#blockGradient3)"/>
+  
+  <!-- Блок 4 - узкий горизонтальный -->
+  <rect x="14" y="14" width="12" height="6" rx="2" fill="url(#blockGradient1)" opacity="0.85"/>
+  
+  <!-- Блок 5 - маленький вертикальный -->
+  <rect x="28" y="24" width="6" height="10" rx="2" fill="url(#blockGradient2)" opacity="0.9"/>
+  
+  <!-- Блок 6 - узкий горизонтальный внизу -->
+  <rect x="2" y="26" width="22" height="6" rx="2" fill="url(#blockGradient3)" opacity="0.8"/>
+  
+  <!-- Точки соединения - показывают возможность соединения блоков -->
+  <circle cx="12" cy="15" r="1.5" fill="white" opacity="0.6"/>
+  <circle cx="14" cy="15" r="1.5" fill="white" opacity="0.6"/>
+  <circle cx="26" cy="7" r="1.5" fill="white" opacity="0.6"/>
+  <circle cx="28" cy="17" r="1.5" fill="white" opacity="0.6"/>
+  <circle cx="26" cy="17" r="1.5" fill="white" opacity="0.6"/>
+</svg>
+
