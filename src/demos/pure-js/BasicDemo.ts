@@ -53,7 +53,7 @@ export async function initPureJsDemo(container: HTMLElement): Promise<() => void
       controlsContainerClass: 'container', // Кастомный CSS класс для контейнера контролов
       controlsFixedPosition: 'bottom', // Фиксировать контролы (с кнопками и статистикой) снизу
       controlsOffset: 20, // Отступ от края в 20px
-      license: { key: 'BB-PRO-1234-5678-ABCD' },
+      license: { key: 'block-builder-pro-key' },
       // Загружаем сохранённые блоки при инициализации
       initialBlocks: savedBlocks,
       onSave: async (blocks) => {

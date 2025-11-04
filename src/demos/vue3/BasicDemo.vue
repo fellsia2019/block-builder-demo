@@ -27,7 +27,7 @@
         controls-container-class="container"
         controls-fixed-position="bottom"
         :controls-offset="20"
-        license-key="BB-PRO-1234-5678-ABCD"
+        license-key="block-builder-pro-key"
         :is-edit="isEdit"
       />
     </div>
