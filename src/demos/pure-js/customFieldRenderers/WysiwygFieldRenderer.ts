@@ -8,7 +8,6 @@ import 'jodit/es2021/jodit.min.css';
 export class WysiwygFieldRenderer implements ICustomFieldRenderer {
   readonly id = 'wysiwyg-editor';
   readonly name = 'WYSIWYG Editor (Jodit)';
-  private editor: Jodit | null = null;
 
   render(container: HTMLElement, context: ICustomFieldContext): ICustomFieldRenderResult {
     // Очищаем контейнер
@@ -21,16 +20,19 @@ export class WysiwygFieldRenderer implements ICustomFieldRenderer {
     
     // Создаем div для Jodit внутри wrapper (Jodit работает с div, а не textarea напрямую)
     const editorElement = document.createElement('div');
-    editorElement.innerHTML = context.value || '';
+    editorElement.innerHTML = (context.value as string) || '';
     wrapper.appendChild(editorElement);
     
     // Добавляем wrapper в container
     container.appendChild(wrapper);
 
+    // Храним экземпляр редактора локально, не как свойство класса
+    let editor: Jodit | null = null;
+
     // Инициализируем Jodit после добавления в DOM
     // Используем setTimeout, чтобы убедиться, что элемент уже в DOM
     setTimeout(() => {
-      this.editor = Jodit.make(editorElement, {
+      editor = Jodit.make(editorElement, {
         height: 400,
         language: 'ru',
         toolbar: true,
@@ -39,35 +41,33 @@ export class WysiwygFieldRenderer implements ICustomFieldRenderer {
         uploader: {
           insertImageAsBase64URI: true
         },
-        placeholder: context.options?.placeholder || 'Введите текст...'
+        placeholder: (context.options?.placeholder as string) || 'Введите текст...'
       });
 
       // Устанавливаем начальное значение после инициализации
       if (context.value) {
-        this.editor.value = context.value;
+        editor.value = context.value as string;
       }
 
       // Обработка изменений
-      if (this.editor) {
-        this.editor.events.on('change', () => {
-          const content = this.editor?.value || '';
-          context.onChange(content);
-        });
-      }
+      editor.events.on('change', () => {
+        const content = editor?.value || '';
+        context.onChange(content);
+      });
     }, 0);
 
     return {
       element: wrapper,  // Возвращаем wrapper, а не container
-      getValue: () => this.editor?.value || '',
-      setValue: (value: string) => {
-        if (this.editor) {
-          this.editor.value = value || '';
+      getValue: () => editor?.value || '',
+      setValue: (value: unknown) => {
+        if (editor) {
+          editor.value = (value as string) || '';
         }
       },
       destroy: () => {
-        if (this.editor) {
-          this.editor.destruct();
-          this.editor = null;
+        if (editor) {
+          editor.destruct();
+          editor = null;
         }
         // Очищаем wrapper
         if (wrapper.parentNode) {

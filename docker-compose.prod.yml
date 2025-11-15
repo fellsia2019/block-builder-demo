@@ -8,6 +8,8 @@ services:
       - bb-shared-network
     environment:
       NODE_ENV: production
+      # License key передается через build args и встраивается в статику при сборке
+      # Для изменения нужно пересобрать образ с новым .env файлом
     expose:
       - "80"
     restart: unless-stopped

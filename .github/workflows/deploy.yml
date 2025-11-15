@@ -17,6 +17,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Create .env for build
+        run: |
+          # Создаем .env файл для сборки из GitHub Secrets
+          # Если VITE_BLOCK_BUILDER_LICENSE_KEY не задан в secrets, используем значение из .env.example
+          if [ -z "${{ secrets.VITE_BLOCK_BUILDER_LICENSE_KEY }}" ]; then
+            echo "⚠️  VITE_BLOCK_BUILDER_LICENSE_KEY not set in secrets, using .env.example"
+            cp .env.example .env || echo "VITE_BLOCK_BUILDER_LICENSE_KEY=block-builder-pro-key" > .env
+          else
+            echo "VITE_BLOCK_BUILDER_LICENSE_KEY=${{ secrets.VITE_BLOCK_BUILDER_LICENSE_KEY }}" > .env
+          fi
+          echo "✅ .env file created for build"
+
       - name: Build Docker image
         run: |
           docker build -t block-builder-demo-bb:${{ github.sha }} -t block-builder-demo-bb:latest -f Dockerfile .
@@ -38,6 +50,7 @@ jobs:
           cp package-lock.json deploy-temp/ || true
           cp nginx.conf deploy-temp/ || true
           cp docker-compose.prod.yml deploy-temp/ || true
+          cp .env.example deploy-temp/ || true
           [ -f .dockerignore ] && cp .dockerignore deploy-temp/ || true
           
           # List copied files for debugging
@@ -110,6 +123,24 @@ jobs:
               mv deploy-temp/.* . 2>/dev/null || true
               rmdir deploy-temp 2>/dev/null || true
               echo "✅ Files moved"
+            fi
+            
+            # Проверяем наличие .env файла на сервере
+            if [ ! -f .env ]; then
+              echo "⚠️  .env file not found on server"
+              echo "📝 Creating .env from .env.example..."
+              if [ -f .env.example ]; then
+                cp .env.example .env
+                echo "✅ .env created from .env.example"
+                echo "⚠️  IMPORTANT: Update .env file with production license key!"
+                echo "   Edit /opt/demo-bb/.env and set VITE_BLOCK_BUILDER_LICENSE_KEY=block-builder-pro-key"
+              else
+                echo "VITE_BLOCK_BUILDER_LICENSE_KEY=block-builder-pro-key" > .env
+                echo "✅ .env created with default key"
+                echo "⚠️  IMPORTANT: Update .env file with production license key!"
+              fi
+            else
+              echo "✅ .env file already exists on server"
             fi
             
             # Load Docker image

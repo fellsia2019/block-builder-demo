@@ -8,7 +8,6 @@ import 'jodit/es2021/jodit.min.css';
 export class WysiwygFieldRenderer implements ICustomFieldRenderer {
   readonly id = 'wysiwyg-editor';
   readonly name = 'WYSIWYG Editor (Jodit)';
-  private editor: Jodit | null = null;
 
   render(container: HTMLElement, context: ICustomFieldContext): ICustomFieldRenderResult {
     // Очищаем контейнер
@@ -19,8 +18,8 @@ export class WysiwygFieldRenderer implements ICustomFieldRenderer {
     textarea.value = context.value || '';
     container.appendChild(textarea);
 
-    // Инициализируем Jodit
-    this.editor = new Jodit(textarea, {
+    // Инициализируем Jodit - храним экземпляр локально, не как свойство класса
+    const editor = new Jodit(textarea, {
       height: 400,
       toolbar: true,
       statusbar: true,
@@ -33,23 +32,22 @@ export class WysiwygFieldRenderer implements ICustomFieldRenderer {
     });
 
     // Обработка изменений
-    this.editor.events.on('change', () => {
-      const content = this.editor?.value || '';
+    editor.events.on('change', () => {
+      const content = editor?.value || '';
       context.onChange(content);
     });
 
     return {
       element: container,
-      getValue: () => this.editor?.value || '',
+      getValue: () => editor?.value || '',
       setValue: (value: string) => {
-        if (this.editor) {
-          this.editor.value = value || '';
+        if (editor) {
+          editor.value = value || '';
         }
       },
       destroy: () => {
-        if (this.editor) {
-          this.editor.destruct();
-          this.editor = null;
+        if (editor) {
+          editor.destruct();
         }
       }
     };

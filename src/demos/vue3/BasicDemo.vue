@@ -27,7 +27,7 @@
         controls-container-class="container"
         controls-fixed-position="bottom"
         :controls-offset="20"
-        license-key="block-builder-pro-key"
+        :license-key="licenseKey"
         :is-edit="isEdit"
       />
     </div>
@@ -77,7 +77,7 @@ const availableBlockTypes = ref(
       icon: cfg.icon,
       render: cfg.render,
       fields: cfg.fields,
-      ...(cfg.spacingOptions && { spacingOptions: cfg.spacingOptions }),
+      ...((cfg as any).spacingOptions && { spacingOptions: (cfg as any).spacingOptions }),
       defaultSettings: {},
       defaultProps
     };
@@ -85,6 +85,9 @@ const availableBlockTypes = ref(
 );
 
 const isEdit = ref(true);
+
+// Получаем license key из переменных окружения
+const licenseKey = import.meta.env.VITE_BLOCK_BUILDER_LICENSE_KEY || 'block-builder-pro-key';
 
 // Загрузка сохраненных блоков из localStorage
 const loadSavedBlocks = () => {

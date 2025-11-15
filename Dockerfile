@@ -10,7 +10,12 @@ RUN npm ci
 # Копируем исходники
 COPY . .
 
+# Копируем .env файл если существует (для production)
+# В development используется .env.example
+COPY .env* ./
+
 # Собираем проект
+# Vite автоматически подхватит переменные из .env
 RUN npm run build
 
 # Production stage
