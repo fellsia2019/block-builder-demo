@@ -12,7 +12,7 @@ import 'swiper/css/pagination';
 export const pureJsBlockConfigs = {
   text: {
     title: 'Текстовый блок',
-    icon: '📝',
+    icon: '/icons/text.svg',
     description: 'Простой текстовый блок',
     render: {
       kind: 'html',
@@ -71,7 +71,7 @@ export const pureJsBlockConfigs = {
 
   image: {
     title: 'Изображение',
-    icon: '🖼️',
+    icon: '/icons/image.svg',
     description: 'Простое изображение',
     render: {
       kind: 'html',
@@ -125,7 +125,7 @@ export const pureJsBlockConfigs = {
 
   slider: {
     title: 'Слайдер',
-    icon: '🎠',
+    icon: '/icons/slider.svg',
     description: 'Интерактивный слайдер изображений с навигацией',
     render: {
       kind: 'custom',
@@ -239,6 +239,7 @@ export const pureJsBlockConfigs = {
         defaultValue: [],
         repeaterConfig: {
           itemTitle: 'Слайд',
+          countLabelVariants: { one: 'элемент', few: 'элемента', many: 'элементов', zero: 'пусто' },
           addButtonText: 'Добавить слайд',
           removeButtonText: 'Удалить',
           min: 1,
@@ -311,7 +312,7 @@ export const pureJsBlockConfigs = {
 
   wysiwyg: {
     title: 'Визуальный редактор - кастомный рендер поля в форме редактирования блока',
-    icon: '✏️',
+    icon: '/icons/rich-text.svg',
     description: 'HTML контент с форматированием',
     render: {
       kind: 'html',
@@ -377,7 +378,7 @@ export const pureJsBlockConfigs = {
 
   apiSelect: {
     title: 'Блок с API Select',
-    icon: '🔌',
+    icon: '/icons/form.svg',
     description: 'Блок для выбора элементов через API (одиночный и множественный выбор)',
     render: {
       kind: 'html',
@@ -545,7 +546,7 @@ export const pureJsBlockConfigs = {
 
   richCardList: {
     title: '🎯 Богатые карточки',
-    icon: '💎',
+    icon: '/icons/card.svg',
     description: 'Блок с множеством полей в каждой карточке для pure JS',
     render: {
       kind: 'html',
@@ -914,6 +915,7 @@ export const pureJsBlockConfigs = {
         ],
         repeaterConfig: {
           itemTitle: 'Карточка',
+          countLabelVariants: { one: 'элемент', few: 'элемента', many: 'элементов', zero: 'пусто' },
           addButtonText: 'Добавить карточку',
           removeButtonText: 'Удалить',
           min: 1,

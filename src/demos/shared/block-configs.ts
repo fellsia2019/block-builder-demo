@@ -21,7 +21,7 @@ import RichCardListBlock from '../vue3/components/RichCardListBlock.vue'
 export const demoBlockConfigs = {
   text: {
     title: 'Текстовый блок',
-    icon: '📝',
+    icon: '/icons/text.svg',
     description: 'Добавьте текстовый контент на страницу',
     render: {
       kind: 'component',
@@ -84,7 +84,7 @@ export const demoBlockConfigs = {
 
   image: {
     title: 'Изображение',
-    icon: '🖼️',
+    icon: '/icons/image.svg',
     description: 'Добавьте изображение на страницу',
     render: {
       kind: 'component',
@@ -137,7 +137,7 @@ export const demoBlockConfigs = {
 
   button: {
     title: 'Кнопка',
-    icon: '🔘',
+    icon: '/icons/button.svg',
     description: 'Добавьте интерактивную кнопку',
     render: {
       kind: 'component',
@@ -206,7 +206,7 @@ export const demoBlockConfigs = {
 
   slider: {
     title: 'Слайдер',
-    icon: '🎠',
+    icon: '/icons/slider.svg',
     description: 'Интерактивный слайдер изображений с навигацией',
     render: {
       kind: 'component',
@@ -230,6 +230,7 @@ export const demoBlockConfigs = {
         defaultValue: [],
         repeaterConfig: {
           itemTitle: 'Слайд',
+          countLabelVariants: { one: 'элемент', few: 'элемента', many: 'элементов', zero: 'пусто' },
           addButtonText: 'Добавить слайд',
           removeButtonText: 'Удалить',
           min: 1,
@@ -302,7 +303,7 @@ export const demoBlockConfigs = {
 
   cards: {
     title: 'Карточки',
-    icon: '🃏',
+    icon: '/icons/card.svg',
     description: 'Блок с карточками для отображения услуг, товаров и т.д.',
     render: {
       kind: 'component',
@@ -326,6 +327,7 @@ export const demoBlockConfigs = {
         defaultValue: [],
         repeaterConfig: {
           itemTitle: 'Карточка',
+          countLabelVariants: { one: 'элемент', few: 'элемента', many: 'элементов', zero: 'пусто' },
           addButtonText: 'Добавить карточку',
           removeButtonText: 'Удалить',
           min: 1,
@@ -414,7 +416,7 @@ export const demoBlockConfigs = {
 
   link: {
     title: 'Ссылка',
-    icon: '🔗',
+    icon: '/icons/tabs.svg',
     description: 'Блок со ссылкой с настройками открытия и фона',
     render: {
       kind: 'component',
@@ -488,7 +490,7 @@ export const demoBlockConfigs = {
 
   wysiwyg: {
     title: 'Визуальный редактор',
-    icon: '✏️',
+    icon: '/icons/rich-text.svg',
     description: 'Блок с визуальным редактором для форматированного текста',
     render: {
       kind: 'component',
@@ -545,7 +547,7 @@ export const demoBlockConfigs = {
 
   apiSelect: {
     title: 'Блок с API Select',
-    icon: '🔌',
+    icon: '/icons/form.svg',
     description: 'Блок для выбора элементов через API (одиночный и множественный выбор)',
     render: {
       kind: 'component',
@@ -667,7 +669,7 @@ export const demoBlockConfigs = {
 
   richCardList: {
     title: '🎯 Богатые карточки',
-    icon: '💎',
+    icon: '/icons/card.svg',
     description: 'Блок с множеством полей в каждой карточке',
     render: {
       kind: 'component',
@@ -774,6 +776,7 @@ export const demoBlockConfigs = {
         ],
         repeaterConfig: {
           itemTitle: 'Карточка',
+          countLabelVariants: { one: 'элемент', few: 'элемента', many: 'элементов', zero: 'пусто' },
           addButtonText: 'Добавить карточку',
           removeButtonText: 'Удалить',
           min: 2,
