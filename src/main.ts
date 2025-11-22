@@ -16,7 +16,7 @@ document.body.insertBefore(nav, document.body.firstChild);
 
 async function loadPage() {
   const path = window.location.pathname;
-  const route = routes[path] || routes['/'];
+  const route = (routes as Record<string, () => Promise<any>>)[path] || routes['/'];
   
   try {
     const module = await route();
@@ -44,9 +44,10 @@ async function loadPage() {
 window.addEventListener('popstate', loadPage);
 document.addEventListener('click', (e) => {
   const target = e.target as HTMLElement;
-  if (target.tagName === 'A' && target.getAttribute('href')?.startsWith('/')) {
+  const href = target.getAttribute('href');
+  if (target.tagName === 'A' && href?.startsWith('/')) {
     e.preventDefault();
-    window.history.pushState({}, '', target.getAttribute('href'));
+    window.history.pushState({}, '', href);
     loadPage();
   }
 });

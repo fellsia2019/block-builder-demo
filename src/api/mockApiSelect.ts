@@ -98,9 +98,27 @@ export class MockHttpClient implements IHttpClient {
     data?: any,
     headers?: Record<string, string>
   ): Promise<IHttpResponse<T>> {
-    // Для демо просто возвращаем успех
+    // Имитация задержки сети
     await new Promise(resolve => setTimeout(resolve, 300));
     
+    // Обработка загрузки изображений
+    if (url === '/api/upload' || url.includes('/api/upload')) {
+      // Генерируем моковый URL для загруженного изображения
+      const mockImageUrl = `https://via.placeholder.com/400x300?text=Uploaded+Image`;
+      
+      return {
+        data: {
+          url: mockImageUrl,
+          data: { url: mockImageUrl },
+          success: true
+        } as T,
+        status: 200,
+        statusText: 'OK',
+        headers: headers || {}
+      };
+    }
+    
+    // Для остальных POST запросов просто возвращаем успех
     return {
       data: { success: true, data } as T,
       status: 200,
