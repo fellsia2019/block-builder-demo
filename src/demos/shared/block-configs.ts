@@ -6,7 +6,6 @@
 // Импорт Vue компонентов для блоков
 import TextBlock from '../vue3/components/TextBlock.vue'
 import ImageBlock from '../vue3/components/ImageBlock.vue'
-import ButtonBlock from '../vue3/components/ButtonBlock.vue'
 import SliderBlock from '../vue3/components/SliderBlock.vue'
 import CardsBlock from '../vue3/components/CardsBlock.vue'
 // @ts-ignore - Vue SFC components with <script setup> are properly handled by build tools
@@ -120,75 +119,6 @@ export const demoBlockConfigs = {
           { type: 'max', value: 50 }
         ],
         defaultValue: 8
-      }
-    ],
-    spacingOptions: {
-      config: {
-        min: 0,
-        max: 120,
-        step: 8,
-        breakpoints: [
-          { name: 'xlarge', label: 'XL (Desktop)', maxWidth: undefined },
-          { name: 'large', label: 'L (Laptop)', maxWidth: 1440 },
-          { name: 'medium', label: 'M (Tablet)', maxWidth: 1024 },
-          { name: 'small', label: 'S (Mobile)', maxWidth: 640 }
-        ]
-      }
-    }
-  },
-
-  button: {
-    title: 'Кнопка',
-    icon: '/icons/button.svg',
-    description: 'Добавьте интерактивную кнопку',
-    render: {
-      kind: 'component',
-      framework: 'vue',
-      component: ButtonBlock
-    },
-    fields: [
-      {
-        field: 'text',
-        label: 'Текст кнопки',
-        type: 'text',
-        placeholder: 'Нажми меня',
-        rules: [
-          { type: 'required' },
-          { type: 'minLength', value: 1 }
-        ],
-        defaultValue: 'Нажми меня'
-      },
-      {
-        field: 'backgroundColor',
-        label: 'Цвет фона',
-        type: 'color',
-        rules: [{ type: 'required' }],
-        defaultValue: '#007bff'
-      },
-      {
-        field: 'color',
-        label: 'Цвет текста',
-        type: 'color',
-        rules: [{ type: 'required' }],
-        defaultValue: '#ffffff'
-      },
-      {
-        field: 'borderRadius',
-        label: 'Скругление углов',
-        type: 'number',
-        rules: [
-          { type: 'min', value: 0 },
-          { type: 'max', value: 50 }
-        ],
-        defaultValue: 4
-      },
-      {
-        field: 'padding',
-        label: 'Внутренние отступы',
-        type: 'text',
-        placeholder: '8px 16px',
-        rules: [],
-        defaultValue: '8px 16px'
       }
     ],
     spacingOptions: {
