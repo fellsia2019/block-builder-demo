@@ -5,7 +5,9 @@ WORKDIR /app
 
 # Копируем package файлы
 COPY package*.json ./
-RUN npm ci
+# Используем npm install в builder stage, так как нужны dev зависимости
+# и package-lock.json может быть не синхронизирован
+RUN npm install --prefer-offline --no-audit
 
 # Копируем исходники
 COPY . .
@@ -32,8 +34,10 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Копируем mock-api-server и устанавливаем production зависимости
 COPY --from=builder /app/package*.json /app/
+COPY --from=builder /app/package-lock.json /app/
 COPY mock-api-server-standalone.js /app/
 WORKDIR /app
+# Используем npm ci для production, так как package-lock.json уже обновлен в builder stage
 RUN npm ci --only=production
 
 # Копируем конфигурацию nginx
