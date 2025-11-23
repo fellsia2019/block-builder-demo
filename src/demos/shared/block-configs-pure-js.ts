@@ -1475,9 +1475,10 @@ export const pureJsBlockConfigs = {
                       fileParamName: 'file',
                       maxFileSize: 5 * 1024 * 1024,
                       uploadHeaders: {},
-                      responseMapper: (response: any) => {
-                        return response.data?.url || response.url || '';
-                      },
+                      responseMapper: (response: any) => ({
+                        src: response.url || response.data?.url || '',
+                        size: response.size
+                      }),
                       onUploadError: (error: any) => {
                         console.error('Ошибка загрузки миниатюры:', error);
                       }
