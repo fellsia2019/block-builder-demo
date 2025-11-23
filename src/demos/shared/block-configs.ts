@@ -1098,16 +1098,14 @@ export const demoBlockConfigs = {
                     rules: [],
                     defaultValue: '',
                     imageUploadConfig: {
-                      uploadUrl: '/api/upload',
+                      uploadUrl: 'https://api.block-builder.ru/api/upload',
                       fileParamName: 'file',
                       maxFileSize: 5 * 1024 * 1024,
-                      uploadHeaders: {
-                        'Authorization': 'Bearer token'
-                      },
-                      responseMapper: (response) => {
+                      uploadHeaders: {},
+                      responseMapper: (response: any) => {
                         return response.data?.url || response.url || '';
                       },
-                      onUploadError: (error) => {
+                      onUploadError: (error: any) => {
                         console.error('Ошибка загрузки миниатюры:', error);
                       }
                     }

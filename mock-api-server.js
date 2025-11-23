@@ -144,40 +144,5 @@ export function setupMockApi(app) {
 
     next();
   });
-
-  // Обработчик загрузки файлов /api/upload
-  app.use((req, res, next) => {
-    if (!req.url.startsWith('/api/upload')) {
-      return next();
-    }
-
-    // Обработка только POST запросов
-    if (req.method !== 'POST') {
-      res.statusCode = 405;
-      res.end('Method Not Allowed');
-      return;
-    }
-
-    // Простой парсер multipart/form-data (для демо)
-    let body = Buffer.alloc(0);
-    
-    req.on('data', chunk => {
-      body = Buffer.concat([body, chunk]);
-    });
-
-    req.on('end', () => {
-      // Эмулируем задержку загрузки
-      setTimeout(() => {
-        // Генерируем фиктивный URL - в реальности файл сохранялся бы на сервере
-        const timestamp = Date.now();
-        const randomId = Math.random().toString(36).substring(7);
-        const mockUrl = `/uploads/${timestamp}-${randomId}.jpg`;
-        
-        // Возвращаем URL загруженного файла как объект
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({ url: mockUrl }));
-      }, 500);
-    });
-  });
 }
 
