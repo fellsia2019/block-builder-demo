@@ -33,12 +33,13 @@ RUN mkdir -p /usr/share/nginx/html /var/log/supervisor /run/nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Копируем mock-api-server и устанавливаем production зависимости
+# Копируем все package файлы (включая package-lock.json если есть)
 COPY --from=builder /app/package*.json /app/
-COPY --from=builder /app/package-lock.json /app/
 COPY mock-api-server-standalone.js /app/
 WORKDIR /app
-# Используем npm ci для production, так как package-lock.json уже обновлен в builder stage
-RUN npm ci --only=production
+# Используем npm install для production, так как это более устойчиво к проблемам с lock файлом
+# npm install автоматически использует package-lock.json если он есть, иначе создаст новый
+RUN npm install --only=production --prefer-offline --no-audit
 
 # Копируем конфигурацию nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
