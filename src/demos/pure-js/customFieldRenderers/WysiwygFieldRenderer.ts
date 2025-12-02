@@ -1,5 +1,6 @@
 /**
  * Wysiwyg Field Renderer для Pure JS с использованием Jodit
+ * Обновлено для версии 1.0.30 с поддержкой ControlManager и новой системы инициализации
  */
 import type { ICustomFieldRenderer, ICustomFieldContext, ICustomFieldRenderResult } from '@mushket-co/block-builder/vue';
 import { Jodit } from 'jodit';
@@ -10,6 +11,14 @@ export class WysiwygFieldRenderer implements ICustomFieldRenderer {
   readonly name = 'WYSIWYG Editor (Jodit)';
 
   render(container: HTMLElement, context: ICustomFieldContext): ICustomFieldRenderResult {
+    const {
+      value,
+      required,
+      options = {},
+      onChange,
+      onError
+    } = context;
+
     // Очищаем контейнер
     container.innerHTML = '';
     
@@ -20,7 +29,7 @@ export class WysiwygFieldRenderer implements ICustomFieldRenderer {
     
     // Создаем div для Jodit внутри wrapper (Jodit работает с div, а не textarea напрямую)
     const editorElement = document.createElement('div');
-    editorElement.innerHTML = (context.value as string) || '';
+    editorElement.innerHTML = (value as string) || '';
     wrapper.appendChild(editorElement);
     
     // Добавляем wrapper в container
@@ -29,40 +38,61 @@ export class WysiwygFieldRenderer implements ICustomFieldRenderer {
     // Храним экземпляр редактора локально, не как свойство класса
     let editor: Jodit | null = null;
 
-    // Инициализируем Jodit после добавления в DOM
-    // Используем setTimeout, чтобы убедиться, что элемент уже в DOM
-    setTimeout(() => {
-      editor = Jodit.make(editorElement, {
-        height: 400,
-        language: 'ru',
-        toolbar: true,
-        statusbar: true,
-        spellcheck: false,
-        uploader: {
-          insertImageAsBase64URI: true
-        },
-        placeholder: (context.options?.placeholder as string) || 'Введите текст...'
-      });
+    // Инициализируем Jodit синхронно (не используем setTimeout, так как ControlManager уже гарантирует, что элемент в DOM)
+    editor = Jodit.make(editorElement, {
+      height: 400,
+      language: 'ru',
+      toolbar: true,
+      statusbar: true,
+      spellcheck: false,
+      uploader: {
+        insertImageAsBase64URI: true
+      },
+      placeholder: (options?.placeholder as string) || 'Введите текст...'
+    });
 
-      // Устанавливаем начальное значение после инициализации
-      if (context.value) {
-        editor.value = context.value as string;
+    // Устанавливаем начальное значение после инициализации
+    if (value) {
+      editor.value = value as string;
+    }
+
+    // Обработка изменений
+    editor.events.on('change', () => {
+      const content = editor?.value || '';
+      onChange(content);
+
+      // Валидация при изменении (если требуется)
+      if (required && onError) {
+        try {
+          const error = this.validateEditor(content);
+          onError(error);
+        } catch (err) {
+          // Игнорируем ошибки валидации если редактор еще не готов
+        }
       }
-
-      // Обработка изменений
-      editor.events.on('change', () => {
-        const content = editor?.value || '';
-        context.onChange(content);
-      });
-    }, 0);
+    });
 
     return {
       element: wrapper,  // Возвращаем wrapper, а не container
-      getValue: () => editor?.value || '',
-      setValue: (value: unknown) => {
-        if (editor) {
-          editor.value = (value as string) || '';
+      getValue: () => {
+        if (!editor) {
+          return value || '';
         }
+        return editor.value || '';
+      },
+      setValue: (newValue: unknown) => {
+        if (editor) {
+          editor.value = (newValue as string) || '';
+        }
+      },
+      validate: () => {
+        if (!editor) {
+          return null;
+        }
+        if (required) {
+          return this.validateEditor(editor.value);
+        }
+        return null;
       },
       destroy: () => {
         if (editor) {
@@ -75,6 +105,22 @@ export class WysiwygFieldRenderer implements ICustomFieldRenderer {
         }
       }
     };
+  }
+
+  /**
+   * Проверяет, пустой ли редактор
+   */
+  private validateEditor(html: string): string | null {
+    const text = html
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .trim();
+    
+    if (text === '' || html === '<p><br></p>' || html === '<p></p>') {
+      return 'Содержимое не может быть пустым';
+    }
+    
+    return null;
   }
 }
 
