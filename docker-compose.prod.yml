@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   demo-bb:
     image: block-builder-demo-bb:latest
