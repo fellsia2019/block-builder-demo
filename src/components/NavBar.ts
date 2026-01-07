@@ -23,7 +23,7 @@ export function createNavBar(): HTMLElement {
         <li><a href="/vue3" class="nav-link">Vue 3</a></li>
         <li><a href="/pure-js" class="nav-link">Pure JS</a></li>
         <li><a href="/react" class="nav-link disabled">React <small>(скоро)</small></a></li>
-        <li><a href="https://block-builder.ru" target="_blank" rel="noopener noreferrer" class="nav-link nav-link-external">На наш сайт</a></li>
+        <li><a href="https://deep-bb.ru" target="_blank" rel="noopener noreferrer" class="nav-link nav-link-external">На наш сайт</a></li>
       </ul>
       <div class="nav-theme-toggle"></div>
     </div>

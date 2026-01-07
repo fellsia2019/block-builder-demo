@@ -1471,7 +1471,7 @@ export const pureJsBlockConfigs = {
                     rules: [],
                     defaultValue: '',
                     imageUploadConfig: {
-                      uploadUrl: 'https://api.block-builder.ru/api/upload',
+                      uploadUrl: 'https://api.deep-bb.ru/api/upload',
                       fileParamName: 'file',
                       maxFileSize: 5 * 1024 * 1024,
                       uploadHeaders: {},
