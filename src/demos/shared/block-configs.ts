@@ -227,8 +227,17 @@ export const demoBlockConfigs = {
         field: 'autoplayDelay',
         label: 'Задержка автопрокрутки (мс)',
         type: 'number',
-        rules: [{ type: 'min', value: 1000 }],
-        defaultValue: 3000
+        rules: [
+          { type: 'min', value: 1000, message: 'Минимум: 1000мс' },
+          { type: 'max', value: 10000, message: 'Максимум: 10000мс' }
+        ],
+        defaultValue: 3000,
+        // ✅ Пример использования dependsOn: поле показывается только если autoplay === true
+        dependsOn: {
+          field: 'autoplay',
+          value: true,
+          operator: 'equals'
+        }
       }
     ]
   },
@@ -394,7 +403,13 @@ export const demoBlockConfigs = {
         label: 'Цвет фона',
         type: 'color',
         rules: [],
-        defaultValue: '#f0f0f0'
+        defaultValue: '#f0f0f0',
+        // ✅ Пример использования dependsOn: поле показывается только если hasBackground === true
+        dependsOn: {
+          field: 'hasBackground',
+          value: true,
+          operator: 'equals'
+        }
       },
       {
         field: 'padding',
