@@ -55,6 +55,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch, computed } from 'vue';
+import { fetchDemoApiList } from '../../../api/demoApiMock';
 
 function normalizeNewsId(value: unknown): number | null {
   if (value === null || value === undefined || value === '') {
@@ -131,14 +132,7 @@ async function loadNewsData(): Promise<void> {
 
   try {
     // Загружаем все новости (в реальном приложении можно отправить список ID)
-    const response = await fetch('http://localhost:3001/api/news?limit=100');
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const allNews = data.data || [];
+    const { data: allNews } = await fetchDemoApiList({ limit: 100 });
 
     // Находим главную новость
     if (featuredNewsIdValue.value) {

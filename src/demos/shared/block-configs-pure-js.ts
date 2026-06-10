@@ -8,6 +8,7 @@ import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import { getApiSelectId, getApiSelectName, getApiSelectEntries } from './apiSelectDisplay';
 
 export const pureJsBlockConfigs = {
   text: {
@@ -383,8 +384,9 @@ export const pureJsBlockConfigs = {
     render: {
       kind: 'html',
       template: (props: any) => {
-        const featuredItemId = props.featuredItemId;
-        const selectedItemIds = props.selectedItemIds || [];
+        const featuredId = getApiSelectId(props.featuredItemId);
+        const featuredName = getApiSelectName(props.featuredItemId);
+        const selectedItems = getApiSelectEntries(props.selectedItemIds);
         const columns = props.columns || 2;
         const bgColor = props.backgroundColor || '#f8f9fa';
         const textColor = props.textColor || '#333333';
@@ -401,29 +403,30 @@ export const pureJsBlockConfigs = {
                 ${props.title ? `<h2 style="margin: 0 0 30px 0; font-size: 28px; font-weight: 700;">${props.title}</h2>` : ''}
         `;
 
-        if (featuredItemId) {
+        if (featuredId !== null) {
           html += `
             <div style="margin-bottom: 30px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 8px;">
-              <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">🌟 Главный элемент (ID: ${featuredItemId}):</h3>
+              <h3 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">🌟 Главный элемент:</h3>
               <div style="padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; color: white;">
-                <p style="margin: 0; opacity: 0.9;">
-                  В реальном приложении здесь будут данные, загруженные из API по ID: ${featuredItemId}
+                <h4 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">${featuredName}</h4>
+                <p style="margin: 0; opacity: 0.9; font-size: 14px;">
+                  ID: ${featuredId} · в проде данные подгружаются из вашего API
                 </p>
               </div>
             </div>
           `;
         }
 
-        if (selectedItemIds.length > 0) {
+        if (selectedItems.length > 0) {
           html += `
             <div>
-              <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">📋 Выбранные элементы (${selectedItemIds.length}):</h3>
+              <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">📋 Выбранные элементы (${selectedItems.length}):</h3>
               <div style="display: grid; grid-template-columns: repeat(${columns}, 1fr); gap: 20px;">
-                ${selectedItemIds.map((id: string | number) => `
+                ${selectedItems.map(item => `
                   <div style="padding: 20px; background: rgba(255,255,255,0.8); border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <h4 style="margin: 0 0 10px 0; font-size: 18px; font-weight: 600;">Элемент ID: ${id}</h4>
+                    <h4 style="margin: 0 0 10px 0; font-size: 18px; font-weight: 600;">${item.name}</h4>
                     <p style="margin: 0; font-size: 14px; opacity: 0.8; line-height: 1.5;">
-                      Данные будут загружены из вашего API в реальном приложении
+                      ID: ${item.id} · данные из API в реальном приложении
                     </p>
                   </div>
                 `).join('')}
@@ -432,7 +435,7 @@ export const pureJsBlockConfigs = {
           `;
         }
 
-        if (!featuredItemId && selectedItemIds.length === 0) {
+        if (featuredId === null && selectedItems.length === 0) {
           html += `
             <div style="text-align: center; padding: 40px; opacity: 0.6; font-style: italic;">
               Элементы не выбраны. Настройте блок в редакторе.

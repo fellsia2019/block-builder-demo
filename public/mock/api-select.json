@@ -1,0 +1,19 @@
+{
+  "data": [
+    { "id": 1, "name": "JavaScript", "title": "JavaScript", "description": "Язык программирования для веб-разработки", "date": "2025-01-15" },
+    { "id": 2, "name": "TypeScript", "title": "TypeScript", "description": "Типизированный JavaScript", "date": "2025-01-14" },
+    { "id": 3, "name": "Vue.js", "title": "Vue.js", "description": "Прогрессивный JavaScript фреймворк", "date": "2025-01-13" },
+    { "id": 4, "name": "React", "title": "React", "description": "Библиотека для создания пользовательских интерфейсов", "date": "2025-01-12" },
+    { "id": 5, "name": "Angular", "title": "Angular", "description": "Платформа для веб-приложений", "date": "2025-01-11" },
+    { "id": 6, "name": "Svelte", "title": "Svelte", "description": "Компилируемый UI фреймворк", "date": "2025-01-10" },
+    { "id": 7, "name": "Next.js", "title": "Next.js", "description": "React фреймворк для продакшна", "date": "2025-01-09" },
+    { "id": 8, "name": "Nuxt.js", "title": "Nuxt.js", "description": "Vue.js фреймворк для продакшна", "date": "2025-01-08" },
+    { "id": 9, "name": "Node.js", "title": "Node.js", "description": "JavaScript runtime для сервера", "date": "2025-01-07" },
+    { "id": 10, "name": "Express", "title": "Express", "description": "Минималистичный веб-фреймворк для Node.js", "date": "2025-01-06" },
+    { "id": 11, "name": "Новость: Запуск продукта", "title": "Запуск нового продукта", "description": "Анонс релиза Block Builder", "date": "2025-01-05" },
+    { "id": 12, "name": "Статья: Обновление платформы", "title": "Обновление платформы", "description": "Новые возможности редактора блоков", "date": "2025-01-04" },
+    { "id": 13, "name": "Новость: Интеграция с API", "title": "Интеграция с внешним API", "description": "api-select и кастомные поля", "date": "2025-01-03" },
+    { "id": 14, "name": "Статья: SSR в Nuxt и Next", "title": "SSR в Nuxt и Next", "description": "Серверный рендеринг блоков", "date": "2025-01-02" },
+    { "id": 15, "name": "Новость: Вебинар для разработчиков", "title": "Вебинар для разработчиков", "description": "Демо и лучшие практики", "date": "2025-01-01" }
+  ]
+}

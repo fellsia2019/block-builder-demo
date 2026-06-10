@@ -40,9 +40,9 @@ import {
   BlockBuilderComponent,
   createBlockManagementUseCase,
   ApiSelectUseCase,
-  FetchHttpClient,
   CustomFieldRendererRegistry
 } from '@mushket-co/block-builder/vue';
+import { DemoHttpClient } from '../../api/demoApiMock';
 import { blockConfigs as rawBlockConfigs } from './block-config.js';
 import { applyClientSideImageUpload } from '../shared/applyClientSideImageUpload';
 import {
@@ -56,8 +56,7 @@ const blockConfigs = applyClientSideImageUpload(rawBlockConfigs);
 
 // Создаем use cases
 const blockManagementUseCase = createBlockManagementUseCase();
-const httpClient = new FetchHttpClient();
-const apiSelectUseCase = new ApiSelectUseCase(httpClient);
+const apiSelectUseCase = new ApiSelectUseCase(new DemoHttpClient());
 const customFieldRendererRegistry = new CustomFieldRendererRegistry();
 customFieldRendererRegistry.register(new WysiwygFieldRenderer());
 

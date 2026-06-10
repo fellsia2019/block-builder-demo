@@ -21,7 +21,7 @@ export async function initPureJsDemo(container: HTMLElement): Promise<() => void
     );
     const pureJsBlockConfigs = applyClientSideImageUpload(rawBlockConfigs);
     const STORAGE_KEY = 'demo-blocks';
-    const { MockHttpClient } = await import('../../api/mockApiSelect');
+    const { DemoHttpClient } = await import('../../api/demoApiMock');
     const { WysiwygFieldRenderer } = await import('./customFieldRenderers/WysiwygFieldRenderer');
 
     // Создаем контейнер для BlockBuilder
@@ -30,7 +30,7 @@ export async function initPureJsDemo(container: HTMLElement): Promise<() => void
     demoContainer.style.cssText = 'width: 100%; min-height: 400px;';
     container.appendChild(demoContainer);
 
-    const httpClient = new MockHttpClient();
+    const httpClient = new DemoHttpClient();
     const savedBlocks = loadBlocksFromLocalStorage(STORAGE_KEY);
 
     // Инициализируем BlockBuilder

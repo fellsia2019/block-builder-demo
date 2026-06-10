@@ -3,9 +3,9 @@ import {
   BlockBuilderComponent,
   createBlockManagementUseCase,
   ApiSelectUseCase,
-  FetchHttpClient,
   CustomFieldRendererRegistry,
 } from '@mushket-co/block-builder/react';
+import { DemoHttpClient } from '../../api/demoApiMock';
 import { blockConfigs as rawBlockConfigs } from './block-config.js';
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer.js';
 import { applyClientSideImageUpload } from '../shared/applyClientSideImageUpload';
@@ -18,7 +18,7 @@ const STORAGE_KEY = 'saved-blocks-react-demo';
 
 export default function BasicDemo() {
   const blockManagementUseCase = useMemo(() => createBlockManagementUseCase(), []);
-  const apiSelectUseCase = useMemo(() => new ApiSelectUseCase(new FetchHttpClient()), []);
+  const apiSelectUseCase = useMemo(() => new ApiSelectUseCase(new DemoHttpClient()), []);
 
   const customFieldRendererRegistry = useMemo(() => {
     const registry = new CustomFieldRendererRegistry();

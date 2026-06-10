@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { fetchDemoApiList } from '../../../../api/demoApiMock'
 
 import './NewsListBlock.css'
 
@@ -111,13 +112,7 @@ export default function NewsListBlock({
       setError(null)
 
       try {
-        const response = await fetch('/api/news?limit=100')
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-        }
-
-        const data = await response.json()
-        const allNews: INews[] = data.data || []
+        const { data: allNews } = await fetchDemoApiList({ limit: 100 })
 
         setFetchedFeaturedNews(
           resolvedFeaturedNewsId
