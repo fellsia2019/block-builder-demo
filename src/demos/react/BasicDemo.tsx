@@ -6,8 +6,9 @@ import {
   FetchHttpClient,
   CustomFieldRendererRegistry,
 } from '@mushket-co/block-builder/react';
-import { blockConfigs } from './block-config.js';
+import { blockConfigs as rawBlockConfigs } from './block-config.js';
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer.js';
+import { applyClientSideImageUpload } from '../shared/applyClientSideImageUpload';
 import {
   loadBlocksFromLocalStorage,
   saveBlocksToLocalStorage,
@@ -25,6 +26,8 @@ export default function BasicDemo() {
     return registry;
   }, []);
 
+  const blockConfigs = useMemo(() => applyClientSideImageUpload(rawBlockConfigs), []);
+
   useEffect(() => {
     const componentRegistry = blockManagementUseCase.getComponentRegistry();
     Object.entries(blockConfigs).forEach(([type, config]) => {
@@ -32,7 +35,7 @@ export default function BasicDemo() {
         componentRegistry.register(type, config.render.component);
       }
     });
-  }, [blockManagementUseCase]);
+  }, [blockManagementUseCase, blockConfigs]);
 
   const availableBlockTypes = useMemo(
     () =>
@@ -50,7 +53,7 @@ export default function BasicDemo() {
             return acc;
           }, {}) ?? {},
       })),
-    []
+    [blockConfigs]
   );
 
   const [initialBlocks] = useState(() => loadBlocksFromLocalStorage(STORAGE_KEY));

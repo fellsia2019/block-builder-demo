@@ -14,7 +14,13 @@ export async function initPureJsDemo(container: HTMLElement): Promise<() => void
     // Динамический импорт block-builder
     const BlockBuilderModule = await import('@mushket-co/block-builder');
     const BlockBuilder = BlockBuilderModule.BlockBuilder || (BlockBuilderModule as any).default;
-    const { pureJsBlockConfigs } = await import('../shared/block-configs-pure-js');
+    const { pureJsBlockConfigs: rawBlockConfigs } = await import('../shared/block-configs-pure-js');
+    const { applyClientSideImageUpload } = await import('../shared/applyClientSideImageUpload');
+    const { loadBlocksFromLocalStorage, saveBlocksToLocalStorage } = await import(
+      '../shared/blockStorage'
+    );
+    const pureJsBlockConfigs = applyClientSideImageUpload(rawBlockConfigs);
+    const STORAGE_KEY = 'demo-blocks';
     const { MockHttpClient } = await import('../../api/mockApiSelect');
     const { WysiwygFieldRenderer } = await import('./customFieldRenderers/WysiwygFieldRenderer');
 
@@ -24,25 +30,8 @@ export async function initPureJsDemo(container: HTMLElement): Promise<() => void
     demoContainer.style.cssText = 'width: 100%; min-height: 400px;';
     container.appendChild(demoContainer);
 
-    // Функция загрузки сохраненных блоков из localStorage
-    const loadSavedBlocks = () => {
-      try {
-        const savedData = localStorage.getItem('demo-blocks');
-        if (savedData) {
-          const blocks = JSON.parse(savedData);
-          return blocks;
-        }
-      } catch (error) {
-        console.error('Ошибка загрузки сохранённых блоков:', error);
-      }
-      return [];
-    };
-
-    // Создаем мок HTTP клиент
     const httpClient = new MockHttpClient();
-
-    // Загружаем сохраненные блоки
-    const savedBlocks = loadSavedBlocks();
+    const savedBlocks = loadBlocksFromLocalStorage(STORAGE_KEY);
 
     // Инициализируем BlockBuilder
     // apiSelectUseCase будет создан автоматически из httpClient внутри BlockBuilder
@@ -58,16 +47,21 @@ export async function initPureJsDemo(container: HTMLElement): Promise<() => void
       // Загружаем сохранённые блоки при инициализации
       initialBlocks: savedBlocks,
       onSave: async (blocks) => {
-        try {
-          // Сохраняем в localStorage для демонстрации
-          localStorage.setItem('demo-blocks', JSON.stringify(blocks));
-          console.log('Блоки сохранены:', blocks);
-          return true;
-        } catch (error) {
-          console.error('Ошибка сохранения:', error);
+        const result = saveBlocksToLocalStorage(STORAGE_KEY, blocks);
+
+        if (!result.ok) {
+          console.error('Ошибка сохранения:', result.error);
           return false;
         }
-      }
+
+        if (result.strippedImages) {
+          console.warn(
+            'localStorage: base64-изображения не сохранены (лимит браузера). Загружайте файлы на сервер или используйте URL.'
+          );
+        }
+
+        return true;
+      },
     });
 
     // Регистрируем кастомный WYSIWYG редактор

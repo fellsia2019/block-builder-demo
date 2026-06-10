@@ -38,5 +38,6 @@ npm run preview
 
 ## Примечания
 
-- Mock API для api-select и upload — `src/api/mockApiSelect.ts` (в dev через Vite plugin, в runtime через `MockHttpClient`).
+- Mock API для api-select — Vite plugin (`mock-api-server.js`) в `npm run dev`; на Vercel работает `FetchHttpClient` + относительные `/api/*` (если нет — api-select через dev-only mock).
+- Загрузка изображений в демо — **клиентский base64** (`applyClientSideImageUpload`), без `/api/upload` (на Vercel mock upload недоступен).
 - Сохранение демо — `localStorage` (`saved-blocks-demo`, `demo-blocks`, `saved-blocks-react-demo`).

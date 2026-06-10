@@ -71,6 +71,9 @@ export default function WysiwygEditor({
       askBeforePasteHTML: false,
       askBeforePasteFromWord: false,
       disablePlugins: ['clipboard', 'paste'],
+      uploader: {
+        insertImageAsBase64URI: true,
+      },
       buttons: [
         'bold',
         'italic',

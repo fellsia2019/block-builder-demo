@@ -43,8 +43,16 @@ import {
   FetchHttpClient,
   CustomFieldRendererRegistry
 } from '@mushket-co/block-builder/vue';
-import { blockConfigs } from './block-config.js';
+import { blockConfigs as rawBlockConfigs } from './block-config.js';
+import { applyClientSideImageUpload } from '../shared/applyClientSideImageUpload';
+import {
+  loadBlocksFromLocalStorage,
+  saveBlocksToLocalStorage,
+} from '../shared/blockStorage';
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer';
+
+const STORAGE_KEY = 'saved-blocks-demo';
+const blockConfigs = applyClientSideImageUpload(rawBlockConfigs);
 
 // Создаем use cases
 const blockManagementUseCase = createBlockManagementUseCase();
@@ -86,39 +94,23 @@ const availableBlockTypes = ref(
 
 const isEdit = ref(true);
 
-// Загрузка сохраненных блоков из localStorage
-const loadSavedBlocks = () => {
-  try {
-    const savedData = localStorage.getItem('saved-blocks-demo');
-    if (savedData) {
-      return JSON.parse(savedData);
-    }
-  } catch (error) {
-    console.error('Ошибка загрузки блоков:', error);
-  }
-  return [];
-};
-
-
-const saved = loadSavedBlocks();
-const initialBlocks = ref(saved?.length > 0 ? saved : []);
+const initialBlocks = ref(loadBlocksFromLocalStorage(STORAGE_KEY));
 
 const handleSave = async (blocks: any[]) => {
-  try {
-    // В реальном приложении здесь будет POST на ваш API:
-    // await fetch('/api/blocks', {
-    //   method: 'POST',
-    //   body: JSON.stringify(blocks)
-    // })
+  const result = saveBlocksToLocalStorage(STORAGE_KEY, blocks);
 
-    // Для демо сохраняем в localStorage
-    localStorage.setItem('saved-blocks-demo', JSON.stringify(blocks));
-    console.log('Blocks saved:', blocks);
-    return true;
-  } catch (error) {
-    console.error('Ошибка сохранения:', error);
+  if (!result.ok) {
+    console.error('Ошибка сохранения:', result.error);
     return false;
   }
+
+  if (result.strippedImages) {
+    console.warn(
+      'localStorage: base64-изображения не сохранены (лимит браузера). Загружайте файлы на сервер или используйте URL.'
+    );
+  }
+
+  return true;
 };
 </script>
 
