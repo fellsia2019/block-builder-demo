@@ -6,7 +6,7 @@ services:
       - bb-shared-network
     environment:
       NODE_ENV: production
-      # License key передается через build args и встраивается в статику при сборке
+      # Статическая сборка Vite (MIT, без лицензирования)
       # Для изменения нужно пересобрать образ с новым .env файлом
     expose:
       - "80"

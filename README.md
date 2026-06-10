@@ -1,67 +1,42 @@
-# Block Builder - Interactive Demos
+# Block Builder — Interactive Demos
 
-Отдельный проект для интерактивных демо Block Builder с поддержкой Vue3, Pure JS и React (в будущем).
+Интерактивные демо [@mushket-co/block-builder](https://www.npmjs.com/package/@mushket-co/block-builder) **1.3.1** (MIT).
 
-## 🚀 Быстрый старт
+| Демо | Маршрут | Стек |
+|------|---------|------|
+| Vue 3 | `/vue3` | `BlockBuilderComponent`, api-select, custom fields, repeater |
+| Pure JS | `/pure-js` | Фасад `BlockBuilder` |
+| React | `/react` | `@mushket-co/block-builder/react`, api-select, WYSIWYG, repeater |
 
-### Установка зависимостей
+**SSR (Nuxt, Next.js)** — живых демо в demo-bb нет. Запускайте примеры из репозитория пакета: [block-builder/examples](https://github.com/mushket-co/block-builder/tree/master/examples) (`examples/nuxt3`, `examples/nuxt4`, `examples/next`).
+
+## Быстрый старт
+
 ```bash
 npm install
-```
-
-### Настройка переменных окружения
-
-Создайте файл `.env` на основе `.env.example`:
-
-```bash
-cp .env.example .env
-```
-
-Файл `.env.example` содержит ключ для локальной разработки. Для продакшена создайте `.env` с реальным ключом `block-builder-pro-key`.
-
-### Разработка
-```bash
 npm run dev
 ```
 
-Откроется на http://localhost:3001
+http://localhost:3001
 
-### Сборка
+Пакет подключается из npm (`@mushket-co/block-builder@^1.3.1`), без alias на локальный `../block-builder`.
+
+## Деплой (Vercel)
+
+- Framework: **Vite**
+- Output: `dist`
+- `vercel.json` — SPA rewrites для маршрутов `/vue3`, `/react`, `/pure-js`
+
+Переменные окружения **не требуются** (лицензирование удалено с версии 1.1.0).
+
+## Сборка
+
 ```bash
 npm run build
-```
-
-### Предпросмотр продакшн сборки
-```bash
 npm run preview
 ```
 
-## 🐳 Docker
+## Примечания
 
-### Сборка образа
-```bash
-docker build -t block-builder-demos .
-```
-
-### Запуск контейнера
-```bash
-docker run -p 8080:80 block-builder-demos
-```
-
-Откроется на http://localhost:8080
-
-## 🚀 Деплой на продакшен
-
-См. [DEPLOY.md](./DEPLOY.md) для инструкций по деплою на продакшен сервер.
-
-**Важно:** После первого деплоя необходимо создать файл `.env` на сервере с production license key:
-
-```bash
-ssh ar69tem@vds.server1
-cd /opt/demo-bb
-echo "VITE_BLOCK_BUILDER_LICENSE_KEY=block-builder-pro-key" > .env
-```
-
-Затем пересоберите и перезапустите контейнер (см. DEPLOY.md).
-
-
+- Mock API для api-select и upload — `src/api/mockApiSelect.ts` (в dev через Vite plugin, в runtime через `MockHttpClient`).
+- Сохранение демо — `localStorage` (`saved-blocks-demo`, `demo-blocks`, `saved-blocks-react-demo`).

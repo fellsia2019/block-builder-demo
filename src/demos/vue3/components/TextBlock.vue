@@ -1,14 +1,12 @@
 <template>
-  <div>
-    <div class="container">
-      <div :style="blockStyle">
-        {{ content }}
-      </div>
+  <div class="text-block">
+    <div class="container" :style="blockStyle">
+      {{ content }}
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -42,5 +40,12 @@ const blockStyle = computed(() => ({
 </script>
 
 <style scoped>
+.text-block {
+  transition: all 0.2s ease;
+}
+
+.text-block:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 </style>
 

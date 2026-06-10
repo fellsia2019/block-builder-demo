@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="button-block">
     <div class="container">
       <button
         class="custom-button"
@@ -14,7 +14,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue'
 
 const props = defineProps({
@@ -62,8 +62,9 @@ const handleClick = () => {
 </script>
 
 <style scoped>
-.container {
+.button-block {
   text-align: center;
+  margin: 20px 0;
 }
 
 .custom-button {

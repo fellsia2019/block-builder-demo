@@ -27,8 +27,8 @@
         controls-container-class="container"
         controls-fixed-position="bottom"
         :controls-offset="20"
-        :license-key="licenseKey"
         :is-edit="isEdit"
+        :warn-on-page-leave="true"
       />
     </div>
   </div>
@@ -40,22 +40,22 @@ import {
   BlockBuilderComponent,
   createBlockManagementUseCase,
   ApiSelectUseCase,
+  FetchHttpClient,
   CustomFieldRendererRegistry
 } from '@mushket-co/block-builder/vue';
-import { demoBlockConfigs } from '../shared/block-configs';
-import { MockHttpClient } from '../../api/mockApiSelect';
+import { blockConfigs } from './block-config.js';
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer';
 
 // Создаем use cases
 const blockManagementUseCase = createBlockManagementUseCase();
-const httpClient = new MockHttpClient();
+const httpClient = new FetchHttpClient();
 const apiSelectUseCase = new ApiSelectUseCase(httpClient);
 const customFieldRendererRegistry = new CustomFieldRendererRegistry();
 customFieldRendererRegistry.register(new WysiwygFieldRenderer());
 
 // Регистрируем компоненты блоков
 const componentRegistry = blockManagementUseCase.getComponentRegistry();
-Object.entries(demoBlockConfigs).forEach(([type, config]) => {
+Object.entries(blockConfigs).forEach(([type, config]) => {
   if (config.render?.component) {
     componentRegistry.register(type, config.render.component);
   }
@@ -63,7 +63,7 @@ Object.entries(demoBlockConfigs).forEach(([type, config]) => {
 
 // Формируем availableBlockTypes из конфигураций
 const availableBlockTypes = ref(
-  Object.entries(demoBlockConfigs).map(([type, cfg]) => {
+  Object.entries(blockConfigs).map(([type, cfg]) => {
     const defaultProps: Record<string, any> = {};
     if (cfg.fields) {
       cfg.fields.forEach((field) => {
@@ -85,9 +85,6 @@ const availableBlockTypes = ref(
 );
 
 const isEdit = ref(true);
-
-// Получаем license key из переменных окружения
-const licenseKey = import.meta.env.VITE_BLOCK_BUILDER_LICENSE_KEY || 'block-builder-pro-key';
 
 // Загрузка сохраненных блоков из localStorage
 const loadSavedBlocks = () => {

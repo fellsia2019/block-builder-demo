@@ -66,7 +66,7 @@ const blockStyle = computed(() => {
 }
 
 .link-block__link {
-  color: var(--bb-color-primary, #667eea);
+  color: var(--bb-color-primary);
   text-decoration: none;
   font-size: 16px;
   font-weight: 500;
@@ -74,11 +74,12 @@ const blockStyle = computed(() => {
 }
 
 .link-block__link:hover {
-  color: var(--bb-color-primary-dark, #5568d3);
+  color: var(--bb-color-primary-dark);
   text-decoration: underline;
 }
 
 .link-block__link:visited {
-  color: var(--bb-color-primary, #667eea);
+  color: var(--bb-color-primary);
 }
 </style>
+

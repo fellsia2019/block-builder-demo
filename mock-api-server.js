@@ -17,6 +17,14 @@ const mockItems = [
   { id: 10, name: 'Express', description: 'Минималистичный веб-фреймворк для Node.js' },
 ];
 
+const mockNews = [
+  { id: 1, name: 'Новость 1: Запуск нового продукта', title: 'Запуск нового продукта', date: '2025-01-15' },
+  { id: 2, name: 'Новость 2: Обновление платформы', title: 'Обновление платформы', date: '2025-01-14' },
+  { id: 3, name: 'Новость 3: Новая функция в приложении', title: 'Новая функция в приложении', date: '2025-01-13' },
+  { id: 4, name: 'Новость 4: Интеграция с партнерами', title: 'Интеграция с партнерами', date: '2025-01-12' },
+  { id: 5, name: 'Новость 5: Успешный год компании', title: 'Успешный год компании', date: '2025-01-11' },
+];
+
 const mockArticles = [
   { id: 1, name: 'Статья 1: Запуск нового продукта', title: 'Запуск нового продукта', date: '2025-01-15' },
   { id: 2, name: 'Статья 2: Обновление платформы', title: 'Обновление платформы', date: '2025-01-14' },
@@ -55,6 +63,30 @@ function handleItemsSearch(searchQuery, page = 1, limit = 10) {
       limit,
       hasMore,
     },
+  };
+}
+
+function handleNewsSearch(searchQuery, page = 1, limit = 10) {
+  let filtered = mockNews;
+
+  if (searchQuery) {
+    const query = searchQuery.toLowerCase();
+    filtered = mockNews.filter(
+      (item) =>
+        item.name.toLowerCase().includes(query) ||
+        item.title.toLowerCase().includes(query)
+    );
+  }
+
+  const start = (page - 1) * limit;
+  const end = start + limit;
+  const paginatedData = filtered.slice(start, end);
+
+  return {
+    data: paginatedData,
+    total: filtered.length,
+    page,
+    hasMore: end < filtered.length,
   };
 }
 
@@ -120,6 +152,29 @@ export function setupMockApi(app) {
     next();
   });
 
+  // Обработчик для /api/news (React demo)
+  app.use((req, res, next) => {
+    if (!req.url.startsWith('/api/news')) {
+      return next();
+    }
+
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const search = url.searchParams.get('search') || '';
+    const page = parseInt(url.searchParams.get('page') || '1');
+    const limit = parseInt(url.searchParams.get('limit') || '10');
+
+    if (req.method === 'GET') {
+      setTimeout(() => {
+        const result = handleNewsSearch(search, page, limit);
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(result));
+      }, 300);
+      return;
+    }
+
+    next();
+  });
+
   // Обработчик для /api/articles
   app.use((req, res, next) => {
     if (!req.url.startsWith('/api/articles')) {
@@ -143,6 +198,28 @@ export function setupMockApi(app) {
     }
 
     next();
+  });
+
+  // Загрузка файлов
+  app.use((req, res, next) => {
+    if (!req.url.startsWith('/api/upload')) {
+      return next();
+    }
+
+    if (req.method !== 'POST') {
+      res.statusCode = 405;
+      res.end('Method Not Allowed');
+      return;
+    }
+
+    req.on('data', () => {});
+    req.on('end', () => {
+      setTimeout(() => {
+        const mockUrl = `https://via.placeholder.com/400x300?text=Uploaded`;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ url: mockUrl }));
+      }, 300);
+    });
   });
 }
 

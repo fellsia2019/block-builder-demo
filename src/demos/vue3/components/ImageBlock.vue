@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="image-block">
     <div class="container">
       <img
         :src="imageUrl"
@@ -12,12 +12,12 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { computed } from 'vue'
 
 const props = defineProps({
   image: {
-    type: [String, Object] as () => string | { src: string },
+    type: [String, Object],
     required: true
   },
   alt: {
@@ -34,12 +34,12 @@ const props = defineProps({
 // base64 - всегда строка
 // серверное загрузка - объект с обязательным src
 const imageUrl = computed(() => {
-  if (typeof props.image === 'string') return props.image
+  if (typeof props.image === 'string') return props.image;
   if (typeof props.image === 'object' && props.image !== null) {
-    return props.image.src || ''
+    return props.image.src || '';
   }
-  return ''
-})
+  return '';
+});
 
 const imageStyle = computed(() => ({
   borderRadius: `${props.borderRadius}px`,
@@ -59,15 +59,16 @@ const handleImageLoad = () => {
 </script>
 
 <style scoped>
-.container {
+.image-block {
   text-align: center;
+  margin: 20px 0;
 }
 
-.container img {
+.image-block img {
   transition: transform 0.3s ease;
 }
 
-.container img:hover {
+.image-block img:hover {
   transform: scale(1.02);
 }
 </style>

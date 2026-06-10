@@ -22,8 +22,8 @@ export function createNavBar(): HTMLElement {
       <ul class="nav-links">
         <li><a href="/vue3" class="nav-link">Vue 3</a></li>
         <li><a href="/pure-js" class="nav-link">Pure JS</a></li>
-        <li><a href="/react" class="nav-link disabled">React <small>(скоро)</small></a></li>
-        <li><a href="https://block-builder.ru" target="_blank" rel="noopener noreferrer" class="nav-link nav-link-external">На наш сайт</a></li>
+        <li><a href="/react" class="nav-link">React</a></li>
+        <li><a href="https://block-builder-doc.vercel.app/" target="_blank" rel="noopener noreferrer" class="nav-link nav-link-external">На наш сайт</a></li>
       </ul>
       <div class="nav-theme-toggle"></div>
     </div>
@@ -44,7 +44,6 @@ export function createNavBar(): HTMLElement {
       border-bottom: 1px solid var(--border-color);
       padding: 0;
       box-shadow: var(--shadow-sm);
-      position: sticky;
       top: 0;
       z-index: 100;
     }

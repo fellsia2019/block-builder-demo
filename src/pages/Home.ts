@@ -43,19 +43,60 @@ export default function renderHome(container: HTMLElement) {
           <div class="card-arrow">→</div>
         </a>
         
-        <a href="/react" class="demo-card react-card disabled">
+        <a href="/react" class="demo-card react-card">
           <div class="card-icon">⚛️</div>
-          <h2 class="card-title">React <small>(скоро)</small></h2>
+          <h2 class="card-title">React</h2>
           <p class="card-description">
-            Демо с React компонентами и современными хуками (в разработке)
+            Полноценное демо с React-компонентами, api-select и кастомными полями
           </p>
           <div class="card-features">
-            <span class="feature-tag">React 18</span>
+            <span class="feature-tag">React 19+</span>
             <span class="feature-tag">Hooks</span>
-            <span class="feature-tag">Coming Soon</span>
+            <span class="feature-tag">BlockBuilderComponent</span>
           </div>
           <div class="card-arrow">→</div>
         </a>
+      </div>
+
+      <div class="ssr-section">
+        <h2 class="ssr-title">SSR: Nuxt и Next.js</h2>
+        <p class="ssr-description">
+          Интерактивные SSR-примеры не входят в demo-bb — они в репозитории пакета block-builder
+        </p>
+        <div class="ssr-links">
+          <a href="https://github.com/mushket-co/block-builder/tree/master/examples/nuxt3" target="_blank" rel="noopener noreferrer" class="ssr-link nuxt-link">
+            <span class="ssr-link-icon">💚</span>
+            <span class="ssr-link-text">
+              <strong>examples/nuxt3</strong>
+              <small>Nuxt 3 SSR</small>
+            </span>
+            <span class="ssr-link-arrow">↗</span>
+          </a>
+          <a href="https://github.com/mushket-co/block-builder/tree/master/examples/nuxt4" target="_blank" rel="noopener noreferrer" class="ssr-link nuxt-link">
+            <span class="ssr-link-icon">💚</span>
+            <span class="ssr-link-text">
+              <strong>examples/nuxt4</strong>
+              <small>Nuxt 4 SSR</small>
+            </span>
+            <span class="ssr-link-arrow">↗</span>
+          </a>
+          <a href="https://github.com/mushket-co/block-builder/tree/master/examples/next" target="_blank" rel="noopener noreferrer" class="ssr-link next-link">
+            <span class="ssr-link-icon">▲</span>
+            <span class="ssr-link-text">
+              <strong>examples/next</strong>
+              <small>Next.js App Router SSR</small>
+            </span>
+            <span class="ssr-link-arrow">↗</span>
+          </a>
+          <a href="https://github.com/mushket-co/block-builder/tree/master/examples" target="_blank" rel="noopener noreferrer" class="ssr-link all-link">
+            <span class="ssr-link-icon">📁</span>
+            <span class="ssr-link-text">
+              <strong>Все примеры</strong>
+              <small>block-builder/examples</small>
+            </span>
+            <span class="ssr-link-arrow">↗</span>
+          </a>
+        </div>
       </div>
     </div>
   `;
@@ -231,6 +272,82 @@ export default function renderHome(container: HTMLElement) {
     
     .demo-card:hover:not(.disabled) .card-arrow {
       transform: translateX(4px);
+    }
+
+    .ssr-section {
+      margin-top: 4rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .ssr-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .ssr-description {
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    .ssr-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .ssr-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .ssr-link:hover {
+      border-color: var(--accent-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .ssr-link-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .ssr-link-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .ssr-link-text strong {
+      color: var(--text-primary);
+      font-size: 0.95rem;
+    }
+
+    .ssr-link-text small {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    .ssr-link-arrow {
+      color: var(--accent-primary);
+      font-size: 1.1rem;
     }
     
     @media (max-width: 768px) {
