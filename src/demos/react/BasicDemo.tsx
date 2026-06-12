@@ -26,7 +26,12 @@ export default function BasicDemo() {
     return registry;
   }, []);
 
-  const blockConfigs = useMemo(() => applyClientSideImageUpload(rawBlockConfigs), []);
+  // В dev mock-api отдаёт /api/upload — как в block-builder/examples/react.
+  // На Vercel upload недоступен, оставляем клиентский base64.
+  const blockConfigs = useMemo(
+    () => (import.meta.env.PROD ? applyClientSideImageUpload(rawBlockConfigs) : rawBlockConfigs),
+    []
+  );
 
   useEffect(() => {
     const componentRegistry = blockManagementUseCase.getComponentRegistry();

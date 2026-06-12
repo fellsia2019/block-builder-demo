@@ -5,6 +5,8 @@ import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
+import './GallerySliderBlock.css'
+
 interface ISlide {
   image?: string | { src?: string; url?: string }
   title?: string
@@ -65,7 +67,7 @@ export default function GallerySliderBlock({
     : false
 
   return (
-    <div className="gallery-slider-block" style={{ background: '#f8f9fa', borderRadius: 8 }}>
+    <div className="gallery-slider-block">
       <div className="container">
         {title ? <h2 className="gallery-title">{title}</h2> : null}
         <Swiper
