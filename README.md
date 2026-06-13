@@ -1,6 +1,6 @@
 # Block Builder — Interactive Demos
 
-Интерактивные демо [@mushket-co/block-builder](https://www.npmjs.com/package/@mushket-co/block-builder) **1.3.1** (MIT).
+Интерактивные демо [@mushket-co/block-builder](https://www.npmjs.com/package/@mushket-co/block-builder) **1.4.0** (MIT).
 
 | Демо | Маршрут | Стек |
 |------|---------|------|
@@ -19,7 +19,7 @@ npm run dev
 
 http://localhost:3001
 
-Пакет подключается из npm (`@mushket-co/block-builder@^1.3.1`), без alias на локальный `../block-builder`.
+Пакет подключается из npm (`@mushket-co/block-builder@^1.4.0`), без alias на локальный `../block-builder`.
 
 ## Деплой (Vercel)
 

@@ -10,7 +10,7 @@
     "lint": "eslint . --ext ts,tsx,js,jsx,vue"
   },
   "dependencies": {
-    "@mushket-co/block-builder": "^1.3.3",
+    "@mushket-co/block-builder": "^1.4.0",
     "jodit": "^4.7.9",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
