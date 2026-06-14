@@ -7,16 +7,16 @@ interface IFieldLike {
   type?: string;
   fields?: IFieldLike[];
   repeaterConfig?: { fields?: IFieldLike[] };
-  imageUploadConfig?: Record<string, unknown>;
+  fileUploadConfig?: Record<string, unknown>;
 }
 
-function patchImageField(field: IFieldLike): void {
-  if (field.type !== 'image' || !field.imageUploadConfig) {
+function patchUploadField(field: IFieldLike): void {
+  if ((field.type !== 'image' && field.type !== 'file') || !field.fileUploadConfig) {
     return;
   }
 
-  const { maxFileSize, accept } = field.imageUploadConfig;
-  field.imageUploadConfig = {
+  const { maxFileSize, accept } = field.fileUploadConfig;
+  field.fileUploadConfig = {
     ...(maxFileSize !== undefined ? { maxFileSize } : {}),
     ...(accept ? { accept } : {}),
   };
@@ -24,7 +24,7 @@ function patchImageField(field: IFieldLike): void {
 
 function patchFields(fields: IFieldLike[] | undefined): void {
   fields?.forEach(field => {
-    patchImageField(field);
+    patchUploadField(field);
     patchFields(field.repeaterConfig?.fields);
     patchFields(field.fields);
   });

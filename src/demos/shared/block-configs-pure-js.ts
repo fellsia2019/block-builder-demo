@@ -17,22 +17,65 @@ export const pureJsBlockConfigs = {
     description: 'Простой текстовый блок',
     render: {
       kind: 'html',
-      template: (props: any) => `
-        <div>
+      template: (props: any) => {
+        const getUrl = (value: unknown) => {
+          if (!value) return '';
+          if (typeof value === 'string') return value;
+          if (typeof value === 'object' && value !== null) {
+            const record = value as Record<string, unknown>;
+            return String(record.src || record.url || '');
+          }
+          return '';
+        };
+        const getUrls = (value: unknown) => {
+          if (Array.isArray(value)) {
+            return value.map(getUrl).filter(Boolean);
+          }
+          const single = getUrl(value);
+          return single ? [single] : [];
+        };
+
+        const imageUrl = getUrl(props.image);
+        const imageUrls = getUrls(props.images);
+        const fileUrl = getUrl(props.file);
+        const fileUrls = getUrls(props.files);
+
+        const imagesHtml = imageUrl
+          ? `<div class="text-block__media" style="margin-top:16px;text-align:left;"><p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#6c757d;">Изображение</p><img src="${imageUrl}" alt="" style="display:block;max-width:100%;height:auto;border-radius:4px;" /></div>`
+          : '';
+        const galleryHtml = imageUrls.length
+          ? `<div class="text-block__media" style="margin-top:16px;text-align:left;"><p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#6c757d;">Изображения</p><div style="display:flex;flex-wrap:wrap;gap:8px;">${imageUrls.map(url => `<img src="${url}" alt="" style="width:120px;height:120px;object-fit:cover;border-radius:4px;" />`).join('')}</div></div>`
+          : '';
+        const fileHtml = fileUrl
+          ? `<div class="text-block__media" style="margin-top:16px;text-align:left;"><p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#6c757d;">Файл</p><a href="${fileUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--bb-color-primary,#0066cc);font-size:14px;">Скачать файл</a></div>`
+          : '';
+        const filesHtml = fileUrls.length
+          ? `<div class="text-block__media" style="margin-top:16px;text-align:left;"><p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#6c757d;">Файлы</p><ul style="margin:0;padding-left:18px;">${fileUrls.map((url, index) => `<li><a href="${url}" target="_blank" rel="noopener noreferrer" style="color:var(--bb-color-primary,#0066cc);font-size:14px;">Файл ${index + 1}</a></li>`).join('')}</ul></div>`
+          : '';
+
+        return `
+        <div class="text-block">
           <div class="container">
             <div style="
               text-align: ${props.textAlign || 'left'};
               font-size: ${props.fontSize || 16}px;
               color: ${props.color || '#333'};
-              padding: 15px;
+              padding: 10px;
+              border: 1px solid #e9ecef;
+              border-radius: 4px;
               background: var(--bg-secondary, #f8f9fa);
-              border-radius: 8px;
-            ">
-              ${props.content || 'Пример текста'}
+              transition: all 0.2s ease;
+            " onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
+              <p class="text-block__content" style="margin:0 0 12px;">${props.content || 'Пример текста'}</p>
+              ${imagesHtml}
+              ${galleryHtml}
+              ${fileHtml}
+              ${filesHtml}
             </div>
           </div>
         </div>
-      `
+      `;
+      }
     },
     fields: [
       {
@@ -66,6 +109,158 @@ export const pureJsBlockConfigs = {
           { value: 'right', label: 'По правому краю' }
         ],
         defaultValue: 'left'
+      },
+      {
+        field: 'image',
+        label: 'Изображение (одно)',
+        type: 'image',
+        rules: [],
+        defaultValue: '',
+        fileUploadConfig: {
+          uploadUrl: '/api/upload',
+          fileParamName: 'file',
+          maxFileSize: 5 * 1024 * 1024,
+          responseMapper: (response: { url: string }) => ({ src: response.url })
+        }
+      },
+      {
+        field: 'images',
+        label: 'Изображения (несколько)',
+        type: 'image',
+        multiple: true,
+        rules: [],
+        defaultValue: [],
+        fileUploadConfig: {
+          uploadUrl: '/api/upload',
+          fileParamName: 'file',
+          maxFileSize: 5 * 1024 * 1024,
+          maxCount: 5,
+          responseMapper: (response: { url: string }) => ({ src: response.url })
+        }
+      },
+      {
+        field: 'file',
+        label: 'Файл (один)',
+        type: 'file',
+        rules: [],
+        defaultValue: '',
+        fileUploadConfig: {
+          uploadUrl: '/api/upload',
+          fileParamName: 'file',
+          maxFileSize: 5 * 1024 * 1024,
+          accept: '.pdf,.doc,.docx,.zip',
+          responseMapper: (response: { url: string }) => response.url
+        }
+      },
+      {
+        field: 'files',
+        label: 'Файлы (несколько)',
+        type: 'file',
+        multiple: true,
+        rules: [],
+        defaultValue: [],
+        fileUploadConfig: {
+          uploadUrl: '/api/upload',
+          fileParamName: 'file',
+          maxFileSize: 5 * 1024 * 1024,
+          accept: '.pdf,.doc,.docx,.zip',
+          maxCount: 5,
+          responseMapper: (response: { url: string }) => response.url
+        }
+      }
+    ]
+  },
+
+  link: {
+    title: 'Блок ссылки',
+    icon: '/icons/button.svg',
+    description: 'Блок с ссылкой, выбором открытия и фоном',
+    render: {
+      kind: 'html',
+      template: (props: any) => {
+        const blockStyle = props.hasBackground
+          ? `background-color: ${props.backgroundColor || '#f0f0f0'}; padding: ${props.padding || '12px 24px'}; border-radius: 8px;`
+          : '';
+        const target = props.linkTarget || '_self';
+        const rel = target === '_blank' ? ' rel="noopener noreferrer"' : '';
+        const url = props.url || '#';
+        const anchorClick = url.startsWith('#')
+          ? `onclick="event.preventDefault(); document.querySelector('[data-block-id=&quot;${url.slice(1)}&quot;]')?.scrollIntoView({behavior:'smooth',block:'start'});"`
+          : '';
+
+        return `
+          <div class="link-block" style="${blockStyle} text-align: center; margin: 20px 0;">
+            <div class="container">
+              <a
+                href="${url}"
+                target="${target}"
+                ${rel}
+                ${anchorClick}
+                style="
+                  color: var(--bb-color-primary);
+                  text-decoration: none;
+                  font-size: 16px;
+                  font-weight: 500;
+                  transition: color 0.2s ease;
+                "
+                onmouseover="this.style.color='var(--bb-color-primary-dark)'; this.style.textDecoration='underline';"
+                onmouseout="this.style.color='var(--bb-color-primary)'; this.style.textDecoration='none';"
+              >
+                ${props.text || 'Ссылка'}
+              </a>
+            </div>
+          </div>
+        `;
+      }
+    },
+    fields: [
+      {
+        field: 'text',
+        label: 'Текст ссылки',
+        type: 'text',
+        placeholder: 'Введите текст ссылки',
+        rules: [
+          { type: 'required', message: 'Текст ссылки обязателен' }
+        ],
+        defaultValue: 'Перейти'
+      },
+      {
+        field: 'url',
+        label: 'Якорь или URL',
+        type: 'block-anchor',
+        blockAnchorConfig: {
+          placeholder: 'Выберите блок на странице',
+          allowCustomUrl: true
+        },
+        rules: [
+          { type: 'required', message: 'Укажите якорь или URL' }
+        ],
+        defaultValue: ''
+      },
+      {
+        field: 'linkTarget',
+        label: 'Как открывать ссылку',
+        type: 'radio',
+        options: [
+          { value: '_self', label: 'В текущей вкладке' },
+          { value: '_blank', label: 'В новой вкладке' }
+        ],
+        rules: [
+          { type: 'required', message: 'Выберите способ открытия' }
+        ],
+        defaultValue: '_self'
+      },
+      {
+        field: 'hasBackground',
+        label: 'Добавить фон блока',
+        type: 'checkbox',
+        defaultValue: false
+      },
+      {
+        field: 'backgroundColor',
+        label: 'Цвет фона',
+        type: 'color',
+        defaultValue: '#f0f0f0'
       }
     ]
   },
@@ -1473,7 +1668,7 @@ export const pureJsBlockConfigs = {
                     type: 'image',
                     rules: [],
                     defaultValue: '',
-                    imageUploadConfig: {
+                    fileUploadConfig: {
                       uploadUrl: '/api/upload',
                       fileParamName: 'file',
                       maxFileSize: 5 * 1024 * 1024,
