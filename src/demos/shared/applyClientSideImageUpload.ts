@@ -8,20 +8,33 @@ interface IFieldLike {
   fields?: IFieldLike[];
   repeaterConfig?: { fields?: IFieldLike[] };
   fileUploadConfig?: Record<string, unknown>;
+  matrixTableConfig?: { imageUploadConfig?: Record<string, unknown> };
 }
 
-function patchUploadField(field: IFieldLike): void {
-  // Только image: без uploadUrl — base64 на клиенте. file требует uploadUrl (или block-builder 1.5.6+).
-  if (field.type !== 'image' || !field.fileUploadConfig) {
-    return;
+function patchUploadConfig(
+  config: Record<string, unknown> | undefined
+): Record<string, unknown> | undefined {
+  if (!config) {
+    return config;
   }
 
-  const { maxFileSize, accept, maxCount } = field.fileUploadConfig;
-  field.fileUploadConfig = {
+  const { maxFileSize, accept, maxCount } = config;
+  return {
     ...(maxFileSize !== undefined ? { maxFileSize } : {}),
     ...(accept ? { accept } : {}),
     ...(maxCount !== undefined ? { maxCount } : {}),
   };
+}
+
+function patchUploadField(field: IFieldLike): void {
+  if (field.type === 'image' && field.fileUploadConfig) {
+    field.fileUploadConfig = patchUploadConfig(field.fileUploadConfig) ?? {};
+  }
+
+  if (field.type === 'matrix-table' && field.matrixTableConfig?.imageUploadConfig) {
+    field.matrixTableConfig.imageUploadConfig =
+      patchUploadConfig(field.matrixTableConfig.imageUploadConfig) ?? {};
+  }
 }
 
 function patchFields(fields: IFieldLike[] | undefined): void {

@@ -1,12 +1,12 @@
 # Block Builder — Interactive Demos
 
-Интерактивные демо [@mushket-co/block-builder](https://www.npmjs.com/package/@mushket-co/block-builder) **1.5.5** (MIT).
+Интерактивные демо [@mushket-co/block-builder](https://www.npmjs.com/package/@mushket-co/block-builder) **1.6.0** (MIT).
 
 | Демо | Маршрут | Стек |
 |------|---------|------|
-| Vue 3 | `/vue3` | `BlockBuilderComponent`, api-select, custom fields, repeater |
-| Pure JS | `/pure-js` | Фасад `BlockBuilder` |
-| React | `/react` | `@mushket-co/block-builder/react`, api-select, WYSIWYG, repeater |
+| Vue 3 | `/vue3` | `BlockBuilderComponent`, api-select, custom fields, repeater, **matrix-table** |
+| Pure JS | `/pure-js` | Фасад `BlockBuilder` (без `matrix-table` / `dependsOn`) |
+| React | `/react` | `@mushket-co/block-builder/react`, api-select, WYSIWYG, repeater, **matrix-table** |
 
 **SSR (Nuxt, Next.js)** — живых демо в demo-bb нет. Запускайте примеры из репозитория пакета: [block-builder/examples](https://github.com/mushket-co/block-builder/tree/master/examples) (`examples/nuxt3`, `examples/nuxt4`, `examples/next`).
 
@@ -19,7 +19,7 @@ npm run dev
 
 http://localhost:3001
 
-Пакет подключается из npm (`@mushket-co/block-builder@^1.5.5`), без alias на локальный `../block-builder`.
+Пакет подключается из npm (`@mushket-co/block-builder@^1.6.0`), без alias на локальный `../block-builder`.
 
 ## Деплой (Vercel)
 

@@ -14,6 +14,8 @@ import NewsListBlock from './components/blocks/NewsListBlock'
 import RichCardListBlock from './components/blocks/RichCardListBlock'
 import RichTextBlock from './components/blocks/RichTextBlock'
 import TextBlock from './components/blocks/TextBlock'
+import TableBlock from './components/blocks/TableBlock'
+import { createTableBlockConfig } from '../shared/tableBlockDefaults.js'
 
 const CardListBlock = lazy(() => import('./components/blocks/CardListBlock'))
 
@@ -1196,6 +1198,8 @@ export const blockConfigs = {
       }
     ]
   },
+
+  table: createTableBlockConfig({ component: TableBlock, framework: 'react' }),
 
   nestedRepeater: {
     title: 'Каталог с вложенными репитерами',

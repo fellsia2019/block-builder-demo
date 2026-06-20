@@ -20,6 +20,8 @@ import NewsListBlock from './components/NewsListBlock.vue'
 import RichTextBlock from './components/RichTextBlock.vue'
 import LinkBlock from './components/LinkBlock.vue'
 import NestedRepeaterBlock from './components/NestedRepeaterBlock.vue'
+import TableBlock from './components/TableBlock.vue'
+import { createTableBlockConfig } from '../shared/tableBlockDefaults.js'
 
 const CardListBlock = defineAsyncComponent(() => import('./components/CardListBlock.vue'))
 
@@ -1202,6 +1204,8 @@ export const blockConfigs = {
       }
     ]
   },
+
+  table: createTableBlockConfig({ component: TableBlock, framework: 'vue' }),
 
   nestedRepeater: {
     title: 'Каталог с вложенными репитерами',
