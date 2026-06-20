@@ -19,7 +19,9 @@ export async function initPureJsDemo(container: HTMLElement): Promise<() => void
     const { loadBlocksFromLocalStorage, saveBlocksToLocalStorage } = await import(
       '../shared/blockStorage'
     );
-    const pureJsBlockConfigs = applyClientSideImageUpload(rawBlockConfigs);
+    const pureJsBlockConfigs = import.meta.env.PROD
+      ? applyClientSideImageUpload(rawBlockConfigs)
+      : rawBlockConfigs;
     const STORAGE_KEY = 'demo-blocks';
     const { DemoHttpClient } = await import('../../api/demoApiMock');
     const { WysiwygFieldRenderer } = await import('./customFieldRenderers/WysiwygFieldRenderer');

@@ -14,7 +14,7 @@ export const pureJsBlockConfigs = {
   text: {
     title: 'Текстовый блок',
     icon: '/icons/text.svg',
-    description: 'Простой текстовый блок',
+    description: 'Добавьте текстовый контент',
     render: {
       kind: 'html',
       template: (props: any) => {
@@ -39,6 +39,16 @@ export const pureJsBlockConfigs = {
         const imageUrls = getUrls(props.images);
         const fileUrl = getUrl(props.file);
         const fileUrls = getUrls(props.files);
+        const topicLabels: Record<string, string> = {
+          dev: 'Разработка',
+          design: 'Дизайн',
+          marketing: 'Маркетинг',
+          analytics: 'Аналитика',
+        };
+        const topics = Array.isArray(props.topics) ? props.topics : [];
+        const topicsHtml = topics.length
+          ? `<div class="text-block__media" style="margin-top:16px;text-align:left;"><p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#6c757d;">Темы (select, multiple)</p><div style="display:flex;flex-wrap:wrap;gap:8px;">${topics.map((value: string) => `<span style="display:inline-block;padding:4px 10px;border-radius:999px;background:#e7f1ff;color:#0b5ed7;font-size:13px;">${topicLabels[value] || value}</span>`).join('')}</div></div>`
+          : '';
 
         const imagesHtml = imageUrl
           ? `<div class="text-block__media" style="margin-top:16px;text-align:left;"><p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#6c757d;">Изображение</p><img src="${imageUrl}" alt="" style="display:block;max-width:100%;height:auto;border-radius:4px;" /></div>`
@@ -57,16 +67,17 @@ export const pureJsBlockConfigs = {
         <div class="text-block">
           <div class="container">
             <div style="
-              text-align: ${props.textAlign || 'left'};
-              font-size: ${props.fontSize || 16}px;
-              color: ${props.color || '#333'};
+              text-align: ${props.textAlign};
+              font-size: ${props.fontSize}px;
+              color: ${props.color};
               padding: 10px;
               border: 1px solid #e9ecef;
               border-radius: 4px;
-              background: var(--bg-secondary, #f8f9fa);
+              background: #f8f9fa;
               transition: all 0.2s ease;
             " onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
-              <p class="text-block__content" style="margin:0 0 12px;">${props.content || 'Пример текста'}</p>
+              <p class="text-block__content" style="margin:0 0 12px;">${props.content}</p>
+              ${topicsHtml}
               ${imagesHtml}
               ${galleryHtml}
               ${fileHtml}
@@ -82,21 +93,28 @@ export const pureJsBlockConfigs = {
         field: 'content',
         label: 'Текст',
         type: 'textarea',
-        placeholder: 'Введите текст...',
-        rules: [{ type: 'required' }],
-        defaultValue: 'Привет! Это пример текстового блока.'
+        placeholder: 'Введите ваш текст...',
+        rules: [
+          { type: 'required', message: 'Текст обязателен' }
+        ],
+        defaultValue: 'Пример текста'
       },
       {
         field: 'fontSize',
         label: 'Размер шрифта',
         type: 'number',
-        rules: [{ type: 'min', value: 12, message: 'Минимальный размер: 12px' }, { type: 'max', value: 48, message: 'Максимальный размер: 48px' }],
+        rules: [
+          { type: 'required', message: 'Размер шрифта обязателен' },
+          { type: 'min', value: 8, message: 'Минимальный размер: 8px' },
+          { type: 'max', value: 72, message: 'Максимальный размер: 72px' }
+        ],
         defaultValue: 16
       },
       {
         field: 'color',
         label: 'Цвет текста',
         type: 'color',
+        rules: [{ type: 'required', message: 'Цвет обязателен' }],
         defaultValue: '#333333'
       },
       {
@@ -108,7 +126,22 @@ export const pureJsBlockConfigs = {
           { value: 'center', label: 'По центру' },
           { value: 'right', label: 'По правому краю' }
         ],
+        rules: [{ type: 'required', message: 'Выравнивание обязательно' }],
         defaultValue: 'left'
+      },
+      {
+        field: 'topics',
+        label: 'Темы (select, множественный выбор)',
+        type: 'select',
+        multiple: true,
+        options: [
+          { value: 'dev', label: 'Разработка' },
+          { value: 'design', label: 'Дизайн' },
+          { value: 'marketing', label: 'Маркетинг' },
+          { value: 'analytics', label: 'Аналитика' }
+        ],
+        rules: [],
+        defaultValue: ['dev', 'design']
       },
       {
         field: 'image',

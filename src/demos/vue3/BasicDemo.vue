@@ -52,7 +52,10 @@ import {
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer';
 
 const STORAGE_KEY = 'saved-blocks-demo';
-const blockConfigs = applyClientSideImageUpload(rawBlockConfigs);
+// В dev mock-api отдаёт /api/upload; на Vercel — клиентский data URL без uploadUrl.
+const blockConfigs = import.meta.env.PROD
+  ? applyClientSideImageUpload(rawBlockConfigs)
+  : rawBlockConfigs;
 
 // Создаем use cases
 const blockManagementUseCase = createBlockManagementUseCase();
