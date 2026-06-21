@@ -16,6 +16,8 @@ import RichTextBlock from './components/blocks/RichTextBlock'
 import TextBlock from './components/blocks/TextBlock'
 import TableBlock from './components/blocks/TableBlock'
 import { createTableBlockConfig } from '../shared/tableBlockDefaults.js'
+import { FormFeaturesDemoBlock } from './components/FormFeaturesDemoBlock'
+import { createFormFeaturesDemoBlockConfig } from '../shared/formFeaturesDemoBlock.js'
 
 const CardListBlock = lazy(() => import('./components/blocks/CardListBlock'))
 
@@ -1362,6 +1364,11 @@ export const blockConfigs = {
         }
       }
     ]
-  }
+  },
+
+  formFeaturesDemo: createFormFeaturesDemoBlockConfig({
+    component: FormFeaturesDemoBlock,
+    framework: 'react',
+  }),
 }
 

@@ -50,6 +50,7 @@ import {
   saveBlocksToLocalStorage,
 } from '../shared/blockStorage';
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer';
+import { FormScopeDemoFieldRenderer } from '../shared/formFeaturesDemoFieldRenderer.js';
 
 const STORAGE_KEY = 'saved-blocks-demo';
 // В dev mock-api отдаёт /api/upload; на Vercel — клиентский data URL без uploadUrl.
@@ -62,6 +63,7 @@ const blockManagementUseCase = createBlockManagementUseCase();
 const apiSelectUseCase = new ApiSelectUseCase(new DemoHttpClient());
 const customFieldRendererRegistry = new CustomFieldRendererRegistry();
 customFieldRendererRegistry.register(new WysiwygFieldRenderer());
+customFieldRendererRegistry.register(new FormScopeDemoFieldRenderer());
 
 // Регистрируем компоненты блоков
 const componentRegistry = blockManagementUseCase.getComponentRegistry();

@@ -3,6 +3,8 @@
  * Эмулирует бэкенд API
  */
 
+import { handleDemoParseXlsxRequest } from './src/demos/shared/formFeaturesMockApi.js';
+
 // Моковые данные - список элементов
 const mockItems = [
   { id: 1, name: 'JavaScript', description: 'Язык программирования для веб-разработки' },
@@ -127,6 +129,13 @@ function handleArticlesSearch(searchQuery, page = 1, limit = 10) {
  * Регистрация эндпоинтов для dev-server Vite
  */
 export function setupMockApi(app) {
+  app.use((req, res, next) => {
+    if (!req.url.startsWith('/api/demo/parse-xlsx')) {
+      return next();
+    }
+    handleDemoParseXlsxRequest(req, res);
+  });
+
   // Обработчик для /api/items
   app.use((req, res, next) => {
     if (!req.url.startsWith('/api/items')) {

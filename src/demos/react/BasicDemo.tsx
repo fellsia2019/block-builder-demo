@@ -8,6 +8,7 @@ import {
 import { DemoHttpClient } from '../../api/demoApiMock';
 import { blockConfigs as rawBlockConfigs } from './block-config.js';
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer.js';
+import { FormScopeDemoFieldRenderer } from '../shared/formFeaturesDemoFieldRenderer.js';
 import { applyClientSideImageUpload } from '../shared/applyClientSideImageUpload';
 import {
   loadBlocksFromLocalStorage,
@@ -23,6 +24,7 @@ export default function BasicDemo() {
   const customFieldRendererRegistry = useMemo(() => {
     const registry = new CustomFieldRendererRegistry();
     registry.register(new WysiwygFieldRenderer());
+    registry.register(new FormScopeDemoFieldRenderer());
     return registry;
   }, []);
 

@@ -19,9 +19,10 @@ export default function renderHome(container: HTMLElement) {
           <div class="card-icon">⚡</div>
           <h2 class="card-title">Vue 3</h2>
           <p class="card-description">
-            Полноценное демо с Vue 3 компонентами, Composition API и TypeScript
+            Полноценное демо с Vue 3 компонентами, form-import (1.8.0), matrix-table и TypeScript
           </p>
           <div class="card-features">
+            <span class="feature-tag">form-import</span>
             <span class="feature-tag">Composition API</span>
             <span class="feature-tag">TypeScript</span>
             <span class="feature-tag">SFC</span>
@@ -47,9 +48,10 @@ export default function renderHome(container: HTMLElement) {
           <div class="card-icon">⚛️</div>
           <h2 class="card-title">React</h2>
           <p class="card-description">
-            Полноценное демо с React-компонентами, api-select и кастомными полями
+            Полноценное демо с React-компонентами, form-import (1.8.0), api-select и кастомными полями
           </p>
           <div class="card-features">
+            <span class="feature-tag">form-import</span>
             <span class="feature-tag">React 19+</span>
             <span class="feature-tag">Hooks</span>
             <span class="feature-tag">BlockBuilderComponent</span>
