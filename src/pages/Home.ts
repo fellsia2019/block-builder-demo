@@ -6,7 +6,7 @@ export default function renderHome(container: HTMLElement) {
         <h1 class="hero-title">
           <span class="hero-icon">🚀</span>
           Block Builder
-          <span class="hero-subtitle">Interactive Demos</span>
+          <span class="hero-subtitle">Interactive Demos · BB 1.9.0</span>
         </h1>
         <p class="hero-description">
           Исследуйте возможности Block Builder через интерактивные демо
@@ -19,7 +19,7 @@ export default function renderHome(container: HTMLElement) {
           <div class="card-icon">⚡</div>
           <h2 class="card-title">Vue 3</h2>
           <p class="card-description">
-            Полноценное демо с Vue 3 компонентами, form-import (1.8.0), matrix-table и TypeScript
+            Полноценное демо с Vue 3: form-import, matrix-table, code-splitting UI (1.9.0)
           </p>
           <div class="card-features">
             <span class="feature-tag">form-import</span>
@@ -30,25 +30,11 @@ export default function renderHome(container: HTMLElement) {
           <div class="card-arrow">→</div>
         </a>
         
-        <a href="/pure-js" class="demo-card js-card">
-          <div class="card-icon">📦</div>
-          <h2 class="card-title">Pure JavaScript</h2>
-          <p class="card-description">
-            Минималистичное демо на чистом JavaScript без фреймворков
-          </p>
-          <div class="card-features">
-            <span class="feature-tag">Vanilla JS</span>
-            <span class="feature-tag">Lightweight</span>
-            <span class="feature-tag">Fast</span>
-          </div>
-          <div class="card-arrow">→</div>
-        </a>
-        
         <a href="/react" class="demo-card react-card">
           <div class="card-icon">⚛️</div>
           <h2 class="card-title">React</h2>
           <p class="card-description">
-            Полноценное демо с React-компонентами, form-import (1.8.0), api-select и кастомными полями
+            Полноценное демо с React: form-import, api-select, lazy-loaded controls (1.9.0)
           </p>
           <div class="card-features">
             <span class="feature-tag">form-import</span>
@@ -212,10 +198,6 @@ export default function renderHome(container: HTMLElement) {
     
     .vue-card::before {
       background: linear-gradient(90deg, #42b983, #35495e);
-    }
-    
-    .js-card::before {
-      background: linear-gradient(90deg, #f7df1e, #f0db4f);
     }
     
     .react-card::before {

@@ -6,7 +6,6 @@ import { createNavBar } from './components/NavBar';
 const routes = {
   '/': () => import('./pages/Home.ts'),
   '/vue3': () => import('./pages/Vue3Demo.ts'),
-  '/pure-js': () => import('./pages/PureJsDemo.ts'),
   '/react': () => import('./pages/ReactDemo.ts'),
 };
 

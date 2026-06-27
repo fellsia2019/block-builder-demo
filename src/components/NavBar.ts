@@ -21,7 +21,6 @@ export function createNavBar(): HTMLElement {
       </a>
       <ul class="nav-links">
         <li><a href="/vue3" class="nav-link">Vue 3</a></li>
-        <li><a href="/pure-js" class="nav-link">Pure JS</a></li>
         <li><a href="/react" class="nav-link">React</a></li>
         <li><a href="https://block-builder-doc.vercel.app/" target="_blank" rel="noopener noreferrer" class="nav-link nav-link-external">На наш сайт</a></li>
       </ul>

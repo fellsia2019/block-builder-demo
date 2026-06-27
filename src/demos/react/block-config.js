@@ -3,11 +3,7 @@
  * Пример использования BlockBuilder с React + Vite
  */
 
-import { lazy } from 'react'
-
 import ButtonBlock from './components/blocks/ButtonBlock'
-import GallerySliderBlock from './components/blocks/GallerySliderBlock'
-import ImageBlock from './components/blocks/ImageBlock'
 import LinkBlock from './components/blocks/LinkBlock'
 import NestedRepeaterBlock from './components/blocks/NestedRepeaterBlock'
 import NewsListBlock from './components/blocks/NewsListBlock'
@@ -18,9 +14,7 @@ import TableBlock from './components/blocks/TableBlock'
 import { createTableBlockConfig } from '../shared/tableBlockDefaults.js'
 import { FormFeaturesDemoBlock } from './components/FormFeaturesDemoBlock'
 import { createFormFeaturesDemoBlockConfig } from '../shared/formFeaturesDemoBlock.js'
-
-const CardListBlock = lazy(() => import('./components/blocks/CardListBlock'))
-
+import { createNestedRepeaterBlockConfig } from '../shared/nestedRepeaterBlockConfig.js'
 
 export const blockConfigs = {
   richText: {
@@ -222,113 +216,50 @@ export const blockConfigs = {
     }
   },
 
-  image: {
-    title: 'Изображение',
-    icon: '/icons/image.svg',
-    description: 'Добавьте изображение на страницу',
-    render: {
-      kind: 'component',
-      framework: 'react',
-      component: ImageBlock
-    },
-    fields: [
-      {
-        field: 'image',
-        label: 'Изображение',
-        type: 'image',
-        rules: [
-          { type: 'required', message: 'Изображение обязательно' }
-        ],
-        defaultValue: '',
-
-        fileUploadConfig: {
-          uploadUrl: '/api/upload',
-          fileParamName: 'file',
-          maxFileSize: 5 * 1024 * 1024, // 5MB для демо
-          responseMapper: (response) => ({
-            src: response.url
-          })
-        }
-      },
-      {
-        field: 'alt',
-        label: 'Описание',
-        type: 'text',
-        placeholder: 'Описание изображения',
-        rules: [],
-        defaultValue: 'Изображение'
-      },
-      {
-        field: 'borderRadius',
-        label: 'Скругление углов',
-        type: 'number',
-        rules: [
-          { type: 'min', value: 0, message: 'Минимум: 0' },
-          { type: 'max', value: 50, message: 'Максимум: 50' }
-        ],
-        defaultValue: 8
-      }
-    ]
-  },
-
   cardList: {
     title: 'Список карточек',
     icon: '/icons/card.svg',
-    description: 'Сетка из карточек с изображениями и описаниями',
+    description: 'Простой блок для проверки repeater UX',
     render: {
       kind: 'component',
       framework: 'react',
-      component: CardListBlock
+      component: RichCardListBlock
     },
     fields: [
-      {
-        field: 'title',
-        label: 'Заголовок секции',
-        type: 'text',
-        placeholder: 'Наши услуги',
-        rules: [],
-        defaultValue: 'Наши услуги'
-      },
       {
         field: 'cards',
         label: 'Карточки',
         type: 'repeater',
         defaultValue: [
           {
-            title: 'Веб-разработка',
-            text: 'Создание современных веб-приложений',
-            button: 'Подробнее',
-            link: 'https://example.com',
-            image: ''
+            title: 'Первая карточка',
+            text: 'Описание первой карточки',
+            link: 'https://example.com/card-1',
+            buttonText: 'Подробнее'
           },
           {
-            title: 'Мобильные приложения',
-            text: 'Разработка мобильных приложений для iOS и Android',
-            button: 'Узнать больше',
-            link: 'https://example.com',
-            image: ''
+            title: 'Вторая карточка',
+            text: 'Описание второй карточки',
+            link: 'https://example.com/card-2',
+            buttonText: 'Подробнее'
           },
           {
-            title: 'Дизайн',
-            text: 'Создание уникального дизайна для вашего бренда',
-            button: 'Посмотреть работы',
-            link: 'https://example.com',
-            image: ''
+            title: 'Третья карточка',
+            text: 'Описание третьей карточки',
+            link: 'https://example.com/card-3',
+            buttonText: 'Подробнее'
           }
         ],
         repeaterConfig: {
           itemTitle: 'Карточка',
-          countLabelVariants: { one: 'карточка', few: 'карточки', many: 'карточек', zero: 'карточек' },
           addButtonText: 'Добавить карточку',
           removeButtonText: 'Удалить',
-          min: 1, // ⚠️ ИГНОРИРУЕТСЯ! т.к. нет required в rules (можно удалить все)
-          max: 12,
           fields: [
             {
               field: 'title',
               label: 'Заголовок',
               type: 'text',
-              placeholder: 'Заголовок карточки',
+              placeholder: 'Название карточки',
               rules: [{ type: 'required', message: 'Заголовок обязателен' }],
               defaultValue: ''
             },
@@ -341,291 +272,21 @@ export const blockConfigs = {
               defaultValue: ''
             },
             {
-              field: 'image',
-              label: 'Изображение',
-              type: 'image',
-              rules: [],
-              defaultValue: ''
-            },
-            {
-              field: 'button',
-              label: 'Текст кнопки',
-              type: 'text',
-              placeholder: 'Подробнее',
-              rules: [],
-              defaultValue: 'Подробнее'
-            },
-            {
               field: 'link',
               label: 'Ссылка',
               type: 'text',
-              placeholder: '/news/123/ или https://example.com',
-              rules: [
-                { type: 'required', message: 'Ссылка обязательна' },
-                { type: 'minLength', value: 1, message: 'Ссылка не может быть пустой' }
-              ],
-              defaultValue: ''
-            },
-            {
-              field: 'featuredNews',
-              label: 'Связанная новость',
-              type: 'api-select',
-              rules: [],
-              defaultValue: null,
-              apiSelectConfig: {
-                url: '/api/news',
-                searchParam: 'search',
-                pageParam: 'page',
-                limitParam: 'limit',
-                placeholder: 'Выберите новость',
-                noResultsText: 'Ничего не найдено',
-                loadingText: 'Загрузка...',
-                errorText: 'Ошибка загрузки новостей',
-                limit: 10
-              }
-            },
-            {
-              field: 'customContent',
-              label: 'Дополнительное содержимое',
-              type: 'custom',
-              rules: [],
-              defaultValue: '',
-              customFieldConfig: {
-                rendererId: 'wysiwyg-editor',
-                options: {
-                  mode: 'simple'
-                }
-              }
-            }
-          ]
-        }
-      },
-      {
-        field: 'cardBackground',
-        label: 'Цвет фона карточек',
-        type: 'color',
-        rules: [],
-        defaultValue: '#ffffff'
-      },
-      {
-        field: 'cardTextColor',
-        label: 'Цвет текста карточек',
-        type: 'color',
-        rules: [],
-        defaultValue: '#333333'
-      },
-      {
-        field: 'cardBorderRadius',
-        label: 'Скругление карточек',
-        type: 'number',
-        rules: [
-          { type: 'min', value: 0, message: 'Минимум: 0' },
-          { type: 'max', value: 50, message: 'Максимум: 50' }
-        ],
-        defaultValue: 8
-      },
-      {
-        field: 'columns',
-        label: 'Количество колонок',
-        type: 'select',
-        options: [
-          { value: '1', label: '1 колонка' },
-          { value: '2', label: '2 колонки' },
-          { value: '3', label: '3 колонки' },
-          { value: '4', label: '4 колонки' }
-        ],
-        rules: [],
-        defaultValue: '3'
-      },
-      {
-        field: 'gap',
-        label: 'Расстояние между карточками',
-        type: 'number',
-        rules: [
-          { type: 'min', value: 0, message: 'Минимум: 0' },
-          { type: 'max', value: 100, message: 'Максимум: 100' }
-        ],
-        defaultValue: 16
-      }
-    ]
-  },
-
-  gallerySlider: {
-    title: 'Слайдер галереи',
-    icon: '/icons/slider.svg',
-    description: '✅ НАСТОЯЩИЙ Swiper из npm пакета! (только с полноценной сборкой)',
-    render: {
-      kind: 'component',
-      framework: 'react',
-      component: GallerySliderBlock
-    },
-    fields: [
-      {
-        field: 'title',
-        label: 'Заголовок галереи',
-        type: 'text',
-        placeholder: 'Галерея изображений',
-        rules: [],
-        defaultValue: 'Галерея изображений'
-      },
-      {
-        field: 'slides',
-        label: 'Слайды',
-        type: 'repeater',
-        rules: [
-          { type: 'required', message: 'Необходим хотя бы один слайд' }
-        ],
-        defaultValue: [
-          {
-            image: '',
-            title: 'Изображение 1',
-            description: 'Описание первого изображения'
-          },
-          {
-            image: '',
-            title: 'Изображение 2',
-            description: 'Описание второго изображения'
-          },
-          {
-            image: '',
-            title: 'Изображение 3',
-            description: 'Описание третьего изображения'
-          },
-          {
-            image: '',
-            title: 'Изображение 4',
-            description: 'Описание четвёртого изображения'
-          }
-        ],
-        repeaterConfig: {
-          itemTitle: 'Слайд',
-          addButtonText: 'Добавить слайд',
-          removeButtonText: 'Удалить',
-          min: 2, // ✅ РАБОТАЕТ! т.к. есть required в rules (минимум 2 слайда)
-          max: 20,
-          fields: [
-            {
-              field: 'image',
-              label: 'Изображение',
-              type: 'image',
-              rules: [{ type: 'required', message: 'Изображение обязательно' }],
-              defaultValue: '',
-              fileUploadConfig: {
-                uploadUrl: '/api/upload',
-                fileParamName: 'file',
-                maxFileSize: 5 * 1024 * 1024, // 5MB для демо
-                responseMapper: (response) => ({
-                  src: response.url // ОБЯЗАТЕЛЬНО вернуть объект с полем src!
-                })
-              }
-            },
-            {
-              field: 'title',
-              label: 'Заголовок',
-              type: 'text',
-              placeholder: 'Заголовок слайда',
-              rules: [{ type: 'required', message: 'Заголовок обязателен' }],
-              defaultValue: ''
-            },
-            {
-              field: 'description',
-              label: 'Описание',
-              type: 'textarea',
-              placeholder: 'Описание слайда',
-              rules: [],
-              defaultValue: ''
-            },
-            {
-              field: 'hasLink',
-              label: 'Добавить ссылку',
-              type: 'checkbox',
-              rules: [],
-              defaultValue: false
-            },
-            {
-              field: 'linkUrl',
-              label: 'URL ссылки',
-              type: 'text',
               placeholder: 'https://example.com',
-              rules: [
-                { type: 'required', message: 'URL ссылки обязателен' }
-              ],
-              defaultValue: '',
-              dependsOn: {
-                field: 'hasLink',
-                value: true,
-                operator: 'equals'
-              }
+              rules: [{ type: 'required', message: 'Ссылка обязательна' }],
+              defaultValue: ''
             },
             {
-              field: 'linkOpenInNewTab',
-              label: 'Открывать в новой вкладке',
-              type: 'checkbox',
-              rules: [],
-              defaultValue: true,
-              dependsOn: {
-                field: 'hasLink',
-                value: true,
-                operator: 'equals'
-              }
-            },
-            {
-              field: 'linkText',
-              label: 'Текст ссылки',
+              field: 'buttonText',
+              label: 'Текст кнопки',
               type: 'text',
-              placeholder: 'Подробнее',
-              rules: [
-                { type: 'required', message: 'Текст ссылки обязателен' }
-              ],
-              defaultValue: 'Подробнее',
-              dependsOn: {
-                field: 'hasLink',
-                value: true,
-                operator: 'equals'
-              }
+              defaultValue: 'Подробнее'
             }
           ]
         }
-      },
-      {
-        field: 'autoplay',
-        label: 'Автопрокрутка',
-        type: 'checkbox',
-        rules: [],
-        defaultValue: true
-      },
-      {
-        field: 'autoplayDelay',
-        label: 'Задержка (мс)',
-        type: 'number',
-        rules: [
-          { type: 'min', value: 1000, message: 'Минимум: 1000мс' },
-          { type: 'max', value: 10000, message: 'Максимум: 10000мс' }
-        ],
-        defaultValue: 3000,
-        // ✅ Пример использования dependsOn: поле показывается только если autoplay === true
-        dependsOn: {
-          field: 'autoplay',
-          value: true,
-          operator: 'equals'
-        }
-      },
-      {
-        field: 'loop',
-        label: 'Зациклить',
-        type: 'checkbox',
-        rules: [],
-        defaultValue: true
-      },
-      {
-        field: 'spaceBetween',
-        label: 'Расстояние между слайдами',
-        type: 'number',
-        rules: [
-          { type: 'min', value: 0, message: 'Минимум: 0' },
-          { type: 'max', value: 100, message: 'Максимум: 100' }
-        ],
-        defaultValue: 30
       }
     ]
   },
@@ -1203,168 +864,10 @@ export const blockConfigs = {
 
   table: createTableBlockConfig({ component: TableBlock, framework: 'react' }),
 
-  nestedRepeater: {
-    title: 'Каталог с вложенными репитерами',
-    icon: '/icons/card.svg',
-    description: 'Демонстрация вложенных репитеров: категории (1-й уровень) → товары (2-й уровень)',
-    render: {
-      kind: 'component',
-      framework: 'react',
-      component: NestedRepeaterBlock
-    },
-    fields: [
-      {
-        field: 'title',
-        label: 'Заголовок каталога',
-        type: 'text',
-        placeholder: 'Каталог товаров',
-        rules: [],
-        defaultValue: 'Каталог товаров'
-      },
-      {
-        field: 'description',
-        label: 'Описание каталога',
-        type: 'textarea',
-        placeholder: 'Описание каталога товаров',
-        rules: [],
-        defaultValue: ''
-      },
-      {
-        field: 'categories',
-        label: 'Категории',
-        type: 'repeater',
-        rules: [
-          { type: 'required', message: 'Необходима хотя бы одна категория' }
-        ],
-        defaultValue: [
-          {
-            name: 'Электроника',
-            description: 'Современные гаджеты и устройства',
-            products: [
-              {
-                name: 'Смартфон',
-                description: 'Современный смартфон с отличной камерой',
-                price: 29999,
-                image: ''
-              },
-              {
-                name: 'Ноутбук',
-                description: 'Мощный ноутбук для работы и игр',
-                price: 59999,
-                image: ''
-              }
-            ]
-          }
-        ],
-        repeaterConfig: {
-          itemTitle: 'Категория',
-          addButtonText: 'Добавить категорию',
-          removeButtonText: 'Удалить категорию',
-          min: 1,
-          max: 10,
-          maxNestingDepth: 2,
-          fields: [
-            {
-              field: 'name',
-              label: 'Название категории',
-              type: 'text',
-              placeholder: 'Название категории',
-              rules: [
-                { type: 'required', message: 'Название категории обязательно' },
-                { type: 'minLength', value: 2, message: 'Минимум 2 символа' }
-              ],
-              defaultValue: ''
-            },
-            {
-              field: 'description',
-              label: 'Описание категории',
-              type: 'textarea',
-              placeholder: 'Описание категории',
-              rules: [],
-              defaultValue: ''
-            },
-            {
-              field: 'products',
-              label: 'Товары',
-              type: 'repeater',
-              rules: [
-                { type: 'required', message: 'Необходим хотя бы один товар' }
-              ],
-              defaultValue: [],
-              repeaterConfig: {
-                itemTitle: 'Товар',
-                addButtonText: 'Добавить товар',
-                removeButtonText: 'Удалить товар',
-                min: 1,
-                max: 20,
-                maxNestingDepth: 2,
-                fields: [
-                  {
-                    field: 'name',
-                    label: 'Название товара',
-                    type: 'text',
-                    placeholder: 'Название товара',
-                    rules: [
-                      { type: 'required', message: 'Название товара обязательно' },
-                      { type: 'minLength', value: 2, message: 'Минимум 2 символа' }
-                    ],
-                    defaultValue: ''
-                  },
-                  {
-                    field: 'description',
-                    label: 'Описание товара',
-                    type: 'textarea',
-                    placeholder: 'Описание товара',
-                    rules: [],
-                    defaultValue: ''
-                  },
-                  {
-                    field: 'price',
-                    label: 'Цена',
-                    type: 'number',
-                    placeholder: '0',
-                    rules: [
-                      { type: 'required', message: 'Цена обязательна' },
-                      { type: 'min', value: 0, message: 'Цена не может быть отрицательной' }
-                    ],
-                    defaultValue: 0
-                  },
-                  {
-                    field: 'image',
-                    label: 'Изображение товара',
-                    type: 'image',
-                    rules: [],
-                    defaultValue: ''
-                  },
-                  {
-                    field: 'thumbnail',
-                    label: 'Миниатюра товара',
-                    type: 'image',
-                    rules: [],
-                    defaultValue: '',
-                    fileUploadConfig: {
-                      uploadUrl: '/api/upload',
-                      fileParamName: 'file',
-                      maxFileSize: 5 * 1024 * 1024,
-                      uploadHeaders: {
-                        'Authorization': 'Bearer token'
-                      },
-                      responseMapper: (response) => {
-                        return response.data?.url || response.url || '';
-                      },
-                      onUploadError: (error) => {
-                        console.error('Ошибка загрузки миниатюры:', error);
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
-    ]
-  },
+  nestedRepeater: createNestedRepeaterBlockConfig({
+    component: NestedRepeaterBlock,
+    framework: 'react',
+  }),
 
   formFeaturesDemo: createFormFeaturesDemoBlockConfig({
     component: FormFeaturesDemoBlock,

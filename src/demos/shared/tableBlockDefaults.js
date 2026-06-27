@@ -1,3 +1,10 @@
+export const TABLE_MATRIX_UPLOAD_CONFIG = {
+  uploadUrl: '/api/upload',
+  fileParamName: 'file',
+  maxFileSize: 5 * 1024 * 1024,
+  responseMapper: response => response.data?.url || response.url || '',
+};
+
 export const DEFAULT_TABLE_MATRIX = {
   tableHead: [
     { id: 'col-name', type: 'default', name: 'Название', nowrap: false, size: '' },
