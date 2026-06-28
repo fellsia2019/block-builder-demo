@@ -6,7 +6,7 @@ import {
   CustomFieldRendererRegistry,
 } from '@mushket-co/block-builder/react';
 import { DemoHttpClient } from '../../api/demoApiMock';
-import { blockConfigs as rawBlockConfigs } from './block-config.js';
+import { createBlockConfigs } from './block-config.js';
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer.js';
 import { FormScopeDemoFieldRenderer } from '../shared/formFeaturesDemoFieldRenderer.js';
 import { applyClientSideImageUpload } from '../shared/applyClientSideImageUpload';
@@ -16,13 +16,15 @@ import {
 } from '../shared/blockStorage';
 import {
   applyDemoGlassBodyClass,
-  DEMO_THEME_OPTIONS,
+  getDemoThemeOptionsForLocale,
   resolveDemoBlockBuilderTheme,
 } from '../shared/blockBuilderTheme.js';
+import { useLocale } from '../../i18n/react/useLocale';
 
 const STORAGE_KEY = 'saved-blocks-react-demo';
 
 export default function BasicDemo() {
+  const { locale, t } = useLocale();
   const blockManagementUseCase = useMemo(() => createBlockManagementUseCase(), []);
   const apiSelectUseCase = useMemo(() => new ApiSelectUseCase(new DemoHttpClient()), []);
 
@@ -33,10 +35,10 @@ export default function BasicDemo() {
     return registry;
   }, []);
 
-  const blockConfigs = useMemo(
-    () => (import.meta.env.PROD ? applyClientSideImageUpload(rawBlockConfigs) : rawBlockConfigs),
-    []
-  );
+  const blockConfigs = useMemo(() => {
+    const configs = createBlockConfigs(locale);
+    return import.meta.env.PROD ? applyClientSideImageUpload(configs) : configs;
+  }, [locale]);
 
   useEffect(() => {
     const componentRegistry = blockManagementUseCase.getComponentRegistry();
@@ -70,6 +72,11 @@ export default function BasicDemo() {
   const [isEdit, setIsEdit] = useState(true);
   const [selectedTheme, setSelectedTheme] = useState('default');
 
+  const themeOptions = useMemo(
+    () => getDemoThemeOptionsForLocale(locale),
+    [locale]
+  );
+
   const themeConfig = useMemo(
     () => resolveDemoBlockBuilderTheme(selectedTheme),
     [selectedTheme]
@@ -84,14 +91,12 @@ export default function BasicDemo() {
     const result = saveBlocksToLocalStorage(STORAGE_KEY, blocks);
 
     if (!result.ok) {
-      console.error('Ошибка сохранения:', result.error);
+      console.error(t('demo.saveError'), result.error);
       return false;
     }
 
     if (result.strippedImages) {
-      console.warn(
-        'localStorage: base64-изображения не сохранены (лимит браузера). Загружайте файлы на сервер или используйте URL.'
-      );
+      console.warn(t('demo.saveStrippedImages'));
     }
 
     return true;
@@ -103,19 +108,17 @@ export default function BasicDemo() {
         <div className="header-content">
           <h1 className="demo-title">
             <span className="title-icon">⚛️</span>
-            React Demo
+            {t('demo.react.title')}
           </h1>
-          <p className="demo-description">
-            Полноценное демо с React-компонентами BlockBuilder (@mushket-co/block-builder/react)
-          </p>
+          <p className="demo-description">{t('demo.react.description')}</p>
           <div className="demo-header-controls">
             <div className="demo-theme-picker">
-              <span className="demo-theme-picker__label">Тема UI BlockBuilder</span>
+              <span className="demo-theme-picker__label">{t('demo.themeLabel')}</span>
               <div className="demo-theme-toggle" role="group" aria-labelledby="demo-theme-label-react">
                 <span id="demo-theme-label-react" className="sr-only">
-                  Выбор темы
+                  {t('demo.themeSelect')}
                 </span>
-                {DEMO_THEME_OPTIONS.map((option) => (
+                {themeOptions.map((option) => (
                   <button
                     key={option.id}
                     type="button"
@@ -130,9 +133,9 @@ export default function BasicDemo() {
               </div>
             </div>
             <div className="demo-mode-picker">
-              <span className="demo-theme-picker__label">Режим BlockBuilder</span>
+              <span className="demo-theme-picker__label">{t('demo.modeLabel')}</span>
               <button type="button" className="demo-mode-btn" onClick={() => setIsEdit((v) => !v)}>
-                {isEdit ? 'Редактирование' : 'Просмотр'}
+                {isEdit ? t('demo.modeEdit') : t('demo.modeView')}
               </button>
             </div>
           </div>
@@ -140,6 +143,8 @@ export default function BasicDemo() {
       </div>
       <div className={`demo-content${themeConfig.glass ? ' builder-shell--glass' : ''}`}>
         <BlockBuilderComponent
+          key={locale}
+          locale={locale}
           theme={themeConfig.theme}
           themeVars={themeConfig.themeVars}
           config={{ availableBlockTypes }}

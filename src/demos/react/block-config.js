@@ -16,7 +16,9 @@ import { FormFeaturesDemoBlock } from './components/FormFeaturesDemoBlock'
 import { createFormFeaturesDemoBlockConfig } from '../shared/formFeaturesDemoBlock.js'
 import { createNestedRepeaterBlockConfig } from '../shared/nestedRepeaterBlockConfig.js'
 
-export const blockConfigs = {
+import { localizeBlockConfigs } from '../../i18n/blockConfig/localizeBlockConfigs.js'
+
+const baseBlockConfigs = {
   richText: {
     title: 'Rich Text (с визуальным редактором)',
     icon: '/icons/rich-text.svg',
@@ -874,4 +876,10 @@ export const blockConfigs = {
     framework: 'react',
   }),
 }
+
+export function createBlockConfigs(locale = 'ru') {
+  return localizeBlockConfigs(baseBlockConfigs, locale)
+}
+
+export const blockConfigs = createBlockConfigs('ru')
 

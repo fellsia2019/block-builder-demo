@@ -1,41 +1,53 @@
+import { createLanguageToggle } from './LanguageToggle';
 import { createThemeToggle } from './ThemeToggle';
+import { getLocale, subscribe, t } from '../i18n';
 
 export function createNavBar(): HTMLElement {
   const nav = document.createElement('nav');
   nav.className = 'demo-nav';
-  
-  // Определяем текущую тему и выбираем соответствующий логотип
+
   const getTheme = (): 'light' | 'dark' => {
     const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (saved) return saved;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   };
-  
-  const logoSrc = getTheme() === 'dark' ? '/logo-inverse.svg' : '/logo-default.svg';
-  
-  nav.innerHTML = `
-    <div class="nav-container">
-      <a href="/" class="nav-logo">
-        <img src="${logoSrc}" alt="Block Builder" class="logo-img" id="nav-logo-img" />
-        <span class="logo-text">Block Builder</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="/vue3" class="nav-link">Vue 3</a></li>
-        <li><a href="/react" class="nav-link">React</a></li>
-        <li><a href="https://block-builder-doc.vercel.app/" target="_blank" rel="noopener noreferrer" class="nav-link nav-link-external">На наш сайт</a></li>
-      </ul>
-      <div class="nav-theme-toggle"></div>
-    </div>
-  `;
-  
-  // Создаем и добавляем переключатель темы
-  const themeToggle = createThemeToggle();
-  const toggleContainer = nav.querySelector('.nav-theme-toggle');
-  if (toggleContainer) {
-    toggleContainer.appendChild(themeToggle);
-  }
-  
-  // Add styles
+
+  const render = () => {
+    const locale = getLocale();
+    const logoSrc = getTheme() === 'dark' ? '/logo-inverse.svg' : '/logo-default.svg';
+
+    nav.innerHTML = `
+      <div class="nav-container">
+        <a href="/" class="nav-logo">
+          <img src="${logoSrc}" alt="${t('nav.logoAlt', locale)}" class="logo-img" id="nav-logo-img" />
+          <span class="logo-text">${t('nav.home', locale)}</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/vue3" class="nav-link">${t('nav.vue3', locale)}</a></li>
+          <li><a href="/react" class="nav-link">${t('nav.react', locale)}</a></li>
+          <li><a href="https://block-builder-doc.vercel.app/" target="_blank" rel="noopener noreferrer" class="nav-link nav-link-external">${t('nav.docs', locale)}</a></li>
+        </ul>
+        <div class="nav-controls">
+          <div class="nav-lang-toggle"></div>
+          <div class="nav-theme-toggle"></div>
+        </div>
+      </div>
+    `;
+
+    const langContainer = nav.querySelector('.nav-lang-toggle');
+    if (langContainer) {
+      langContainer.appendChild(createLanguageToggle());
+    }
+
+    const toggleContainer = nav.querySelector('.nav-theme-toggle');
+    if (toggleContainer) {
+      toggleContainer.appendChild(createThemeToggle());
+    }
+  };
+
+  render();
+  subscribe(render);
+
   const style = document.createElement('style');
   style.textContent = `
     .demo-nav {
@@ -144,6 +156,7 @@ export function createNavBar(): HTMLElement {
       .nav-links {
         width: 100%;
         justify-content: center;
+        margin-left: 0;
       }
       
       .nav-link {
@@ -153,8 +166,7 @@ export function createNavBar(): HTMLElement {
     }
   `;
   document.head.appendChild(style);
-  
-  // Обновляем логотип при изменении темы
+
   const updateLogo = () => {
     const theme = document.documentElement.getAttribute('data-theme');
     const logoImg = nav.querySelector('#nav-logo-img') as HTMLImageElement;
@@ -162,14 +174,12 @@ export function createNavBar(): HTMLElement {
       logoImg.src = theme === 'dark' ? '/logo-inverse.svg' : '/logo-default.svg';
     }
   };
-  
-  // Слушаем изменения темы
+
   const observer = new MutationObserver(updateLogo);
   observer.observe(document.documentElement, {
     attributes: true,
-    attributeFilter: ['data-theme']
+    attributeFilter: ['data-theme'],
   });
-  
+
   return nav;
 }
-

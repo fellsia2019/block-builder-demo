@@ -1,3 +1,5 @@
+import { getLocale, t } from '../i18n';
+
 export function createThemeToggle(): HTMLElement {
   const getTheme = (): 'light' | 'dark' => {
     const saved = localStorage.getItem('theme') as 'light' | 'dark' | null;
@@ -13,7 +15,7 @@ export function createThemeToggle(): HTMLElement {
 
   const toggle = document.createElement('button');
   toggle.className = 'theme-toggle-standalone';
-  toggle.setAttribute('aria-label', 'Переключить тему');
+  toggle.setAttribute('aria-label', t('theme.toggle', getLocale()));
   
   const updateButton = (theme: 'light' | 'dark') => {
     toggle.innerHTML = theme === 'dark' 

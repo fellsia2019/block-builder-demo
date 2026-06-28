@@ -2,6 +2,9 @@
 import './styles/theme.css';
 import './demos/shared/blockBuilderGlass.css';
 import { createNavBar } from './components/NavBar';
+import { getLocale, initLocale, subscribe, t } from './i18n';
+
+initLocale();
 
 // Главный роутер для демо
 const routes = {
@@ -30,9 +33,10 @@ async function loadPage() {
     console.error('Error loading page:', error);
     const app = document.getElementById('app');
     if (app) {
+      const locale = getLocale();
       app.innerHTML = `
         <div class="error-container" style="padding: 3rem; text-align: center;">
-          <h2 style="color: var(--error); margin-bottom: 1rem;">Ошибка загрузки</h2>
+          <h2 style="color: var(--error); margin-bottom: 1rem;">${t('error.loadTitle', locale)}</h2>
           <p style="color: var(--text-secondary);">${error}</p>
         </div>
       `;
@@ -50,6 +54,10 @@ document.addEventListener('click', (e) => {
     window.history.pushState({}, '', href);
     loadPage();
   }
+});
+
+subscribe(() => {
+  loadPage();
 });
 
 // Загрузка начальной страницы

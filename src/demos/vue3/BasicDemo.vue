@@ -4,16 +4,16 @@
       <div class="header-content">
         <h1 class="demo-title">
           <span class="title-icon">⚡</span>
-          Vue 3 Demo
+          {{ t('demo.vue.title') }}
         </h1>
         <p class="demo-description">
-          Полноценное демо с использованием настоящих Vue 3 компонентов BlockBuilder
+          {{ t('demo.vue.description') }}
         </p>
         <div class="demo-header-controls">
           <div class="demo-theme-picker">
-            <span class="demo-theme-picker__label">Тема UI BlockBuilder</span>
+            <span class="demo-theme-picker__label">{{ t('demo.themeLabel') }}</span>
             <div class="demo-theme-toggle" role="group" aria-labelledby="demo-theme-label-vue">
-              <span id="demo-theme-label-vue" class="sr-only">Выбор темы</span>
+              <span id="demo-theme-label-vue" class="sr-only">{{ t('demo.themeSelect') }}</span>
               <button
                 v-for="option in themeOptions"
                 :key="option.id"
@@ -27,9 +27,9 @@
             </div>
           </div>
           <div class="demo-mode-picker">
-            <span class="demo-theme-picker__label">Режим BlockBuilder</span>
+            <span class="demo-theme-picker__label">{{ t('demo.modeLabel') }}</span>
             <button type="button" class="demo-mode-btn" @click="isEdit = !isEdit">
-              {{ isEdit ? 'Редактирование' : 'Просмотр' }}
+              {{ isEdit ? t('demo.modeEdit') : t('demo.modeView') }}
             </button>
           </div>
         </div>
@@ -37,6 +37,8 @@
     </div>
     <div class="demo-content" :class="{ 'builder-shell--glass': themeConfig.glass }">
       <BlockBuilderComponent
+        :key="locale"
+        :locale="locale"
         :theme="themeConfig.theme"
         :theme-vars="themeConfig.themeVars"
         :config="{ availableBlockTypes }"
@@ -64,7 +66,7 @@ import {
   CustomFieldRendererRegistry,
 } from '@mushket-co/block-builder/vue';
 import { DemoHttpClient } from '../../api/demoApiMock';
-import { blockConfigs as rawBlockConfigs } from './block-config.js';
+import { createBlockConfigs } from './block-config.js';
 import { applyClientSideImageUpload } from '../shared/applyClientSideImageUpload';
 import {
   loadBlocksFromLocalStorage,
@@ -72,16 +74,20 @@ import {
 } from '../shared/blockStorage';
 import {
   applyDemoGlassBodyClass,
-  DEMO_THEME_OPTIONS,
+  getDemoThemeOptionsForLocale,
   resolveDemoBlockBuilderTheme,
 } from '../shared/blockBuilderTheme.js';
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer';
 import { FormScopeDemoFieldRenderer } from '../shared/formFeaturesDemoFieldRenderer.js';
+import { useLocale } from '../../i18n/vue/useLocale';
 
 const STORAGE_KEY = 'saved-blocks-demo';
-const blockConfigs = import.meta.env.PROD
-  ? applyClientSideImageUpload(rawBlockConfigs)
-  : rawBlockConfigs;
+const { locale, t } = useLocale();
+
+const blockConfigs = computed(() => {
+  const configs = createBlockConfigs(locale.value);
+  return import.meta.env.PROD ? applyClientSideImageUpload(configs) : configs;
+});
 
 const blockManagementUseCase = createBlockManagementUseCase();
 const apiSelectUseCase = new ApiSelectUseCase(new DemoHttpClient());
@@ -89,15 +95,21 @@ const customFieldRendererRegistry = new CustomFieldRendererRegistry();
 customFieldRendererRegistry.register(new WysiwygFieldRenderer());
 customFieldRendererRegistry.register(new FormScopeDemoFieldRenderer());
 
-const componentRegistry = blockManagementUseCase.getComponentRegistry();
-Object.entries(blockConfigs).forEach(([type, config]) => {
-  if (config.render?.component) {
-    componentRegistry.register(type, config.render.component);
-  }
-});
+watch(
+  blockConfigs,
+  (configs) => {
+    const componentRegistry = blockManagementUseCase.getComponentRegistry();
+    Object.entries(configs).forEach(([type, config]) => {
+      if (config.render?.component) {
+        componentRegistry.register(type, config.render.component);
+      }
+    });
+  },
+  { immediate: true }
+);
 
-const availableBlockTypes = ref(
-  Object.entries(blockConfigs).map(([type, cfg]) => {
+const availableBlockTypes = computed(() =>
+  Object.entries(blockConfigs.value).map(([type, cfg]) => {
     const defaultProps: Record<string, unknown> = {};
     if (cfg.fields) {
       cfg.fields.forEach((field) => {
@@ -122,7 +134,7 @@ const availableBlockTypes = ref(
 
 const isEdit = ref(true);
 const selectedTheme = ref('default');
-const themeOptions = DEMO_THEME_OPTIONS;
+const themeOptions = computed(() => getDemoThemeOptionsForLocale(locale.value));
 
 const themeConfig = computed(() => resolveDemoBlockBuilderTheme(selectedTheme.value));
 
@@ -140,14 +152,12 @@ const handleSave = async (blocks: unknown[]) => {
   const result = saveBlocksToLocalStorage(STORAGE_KEY, blocks);
 
   if (!result.ok) {
-    console.error('Ошибка сохранения:', result.error);
+    console.error(t('demo.saveError'), result.error);
     return false;
   }
 
   if (result.strippedImages) {
-    console.warn(
-      'localStorage: base64-изображения не сохранены (лимит браузера). Загружайте файлы на сервер или используйте URL.'
-    );
+    console.warn(t('demo.saveStrippedImages'));
   }
 
   return true;

@@ -1,25 +1,27 @@
+import { getLocale, t } from '../i18n';
+
 export default function renderHome(container: HTMLElement) {
-  
+  const locale = getLocale();
+
   container.innerHTML = `
     <div class="home-container">
       <div class="hero-section">
         <h1 class="hero-title">
           <span class="hero-icon">🚀</span>
-          Block Builder
-          <span class="hero-subtitle">Interactive Demos · BB 1.9.0</span>
+          ${t('app.title', locale)}
+          <span class="hero-subtitle">${t('app.subtitle', locale)}</span>
         </h1>
         <p class="hero-description">
-          Исследуйте возможности Block Builder через интерактивные демо
-          с различными фреймворками и подходами
+          ${t('app.description', locale)}
         </p>
       </div>
       
       <div class="demos-grid">
         <a href="/vue3" class="demo-card vue-card">
           <div class="card-icon">⚡</div>
-          <h2 class="card-title">Vue 3</h2>
+          <h2 class="card-title">${t('home.vue.title', locale)}</h2>
           <p class="card-description">
-            Полноценное демо с Vue 3: form-import, matrix-table, code-splitting UI (1.9.0)
+            ${t('home.vue.description', locale)}
           </p>
           <div class="card-features">
             <span class="feature-tag">form-import</span>
@@ -32,13 +34,13 @@ export default function renderHome(container: HTMLElement) {
         
         <a href="/react" class="demo-card react-card">
           <div class="card-icon">⚛️</div>
-          <h2 class="card-title">React</h2>
+          <h2 class="card-title">${t('home.react.title', locale)}</h2>
           <p class="card-description">
-            Полноценное демо с React: form-import, api-select, lazy-loaded controls (1.9.0)
+            ${t('home.react.description', locale)}
           </p>
           <div class="card-features">
             <span class="feature-tag">form-import</span>
-            <span class="feature-tag">React 19+</span>
+            <span class="feature-tag">React 18+</span>
             <span class="feature-tag">Hooks</span>
             <span class="feature-tag">BlockBuilderComponent</span>
           </div>
@@ -47,9 +49,9 @@ export default function renderHome(container: HTMLElement) {
       </div>
 
       <div class="ssr-section">
-        <h2 class="ssr-title">SSR: Nuxt и Next.js</h2>
+        <h2 class="ssr-title">${t('home.ssr.title', locale)}</h2>
         <p class="ssr-description">
-          Интерактивные SSR-примеры не входят в demo-bb — они в репозитории пакета block-builder
+          ${t('home.ssr.description', locale)}
         </p>
         <div class="ssr-links">
           <a href="https://github.com/mushket-co/block-builder/tree/master/examples/nuxt3" target="_blank" rel="noopener noreferrer" class="ssr-link nuxt-link">
@@ -79,7 +81,7 @@ export default function renderHome(container: HTMLElement) {
           <a href="https://github.com/mushket-co/block-builder/tree/master/examples" target="_blank" rel="noopener noreferrer" class="ssr-link all-link">
             <span class="ssr-link-icon">📁</span>
             <span class="ssr-link-text">
-              <strong>Все примеры</strong>
+              <strong>${t('home.ssr.allExamples', locale)}</strong>
               <small>block-builder/examples</small>
             </span>
             <span class="ssr-link-arrow">↗</span>
@@ -88,10 +90,11 @@ export default function renderHome(container: HTMLElement) {
       </div>
     </div>
   `;
-  
-  // Add styles
-  const style = document.createElement('style');
-  style.textContent = `
+
+  if (!document.getElementById('home-page-styles')) {
+    const style = document.createElement('style');
+    style.id = 'home-page-styles';
+    style.textContent = `
     .home-container {
       min-height: 100vh;
       padding: 4rem 2rem;
@@ -360,5 +363,6 @@ export default function renderHome(container: HTMLElement) {
       }
     }
   `;
-  document.head.appendChild(style);
+    document.head.appendChild(style);
+  }
 }

@@ -3,7 +3,7 @@
  * Это пример ПРАВИЛЬНОГО использования BlockBuilder с полноценным Vue3 + Vite
  *
  * ✅ Настоящие Vue SFC компоненты (.vue файлы)
- * ✅ Code-splitting и lazy-loaded field controls (BB 1.9.0)
+ * ✅ Code-splitting и lazy-loaded field controls
  * ✅ Полноценная сборка с Vite
  * ✅ Все возможности современного фреймворка
  */
@@ -23,7 +23,9 @@ import { createFormFeaturesDemoBlockConfig } from '../shared/formFeaturesDemoBlo
 import { createNestedRepeaterBlockConfig } from '../shared/nestedRepeaterBlockConfig.js'
 
 
-export const blockConfigs = {
+import { localizeBlockConfigs } from '../../i18n/blockConfig/localizeBlockConfigs.js'
+
+const baseBlockConfigs = {
   richText: {
     title: 'Rich Text (с визуальным редактором)',
     icon: '/icons/rich-text.svg',
@@ -881,4 +883,10 @@ export const blockConfigs = {
     framework: 'vue',
   }),
 }
+
+export function createBlockConfigs(locale = 'ru') {
+  return localizeBlockConfigs(baseBlockConfigs, locale)
+}
+
+export const blockConfigs = createBlockConfigs('ru')
 

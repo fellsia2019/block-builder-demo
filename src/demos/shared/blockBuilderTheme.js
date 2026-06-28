@@ -1,10 +1,13 @@
 /** Demo theme presets for BlockBuilder UI (Vue/React demos). */
 
-export const DEMO_THEME_OPTIONS = [
-  { id: 'default', label: 'Default' },
-  { id: 'dark', label: 'Dark' },
-  { id: 'custom', label: 'Custom' },
-]
+import { getDemoThemeOptions } from '../../i18n/index'
+
+export function getDemoThemeOptionsForLocale(locale) {
+  return getDemoThemeOptions(locale)
+}
+
+/** @deprecated Use getDemoThemeOptionsForLocale(locale) */
+export const DEMO_THEME_OPTIONS = getDemoThemeOptions()
 
 /** Cyan frosted glass — accent #00e3ff */
 export const CYAN_GLASS_THEME_VARS = {
