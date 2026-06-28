@@ -1,6 +1,6 @@
 {
   "name": "block-builder-demos",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "lint": "eslint . --ext ts,tsx,js,jsx,vue"
   },
   "dependencies": {
-    "@mushket-co/block-builder": "^1.9.0",
+    "@mushket-co/block-builder": "^1.11.0",
     "jodit": "^4.7.9",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

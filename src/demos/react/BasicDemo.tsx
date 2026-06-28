@@ -14,6 +14,11 @@ import {
   loadBlocksFromLocalStorage,
   saveBlocksToLocalStorage,
 } from '../shared/blockStorage';
+import {
+  applyDemoGlassBodyClass,
+  DEMO_THEME_OPTIONS,
+  resolveDemoBlockBuilderTheme,
+} from '../shared/blockBuilderTheme.js';
 
 const STORAGE_KEY = 'saved-blocks-react-demo';
 
@@ -28,8 +33,6 @@ export default function BasicDemo() {
     return registry;
   }, []);
 
-  // В dev mock-api отдаёт /api/upload — как в block-builder/examples/react.
-  // На Vercel upload недоступен, оставляем клиентский base64.
   const blockConfigs = useMemo(
     () => (import.meta.env.PROD ? applyClientSideImageUpload(rawBlockConfigs) : rawBlockConfigs),
     []
@@ -65,6 +68,17 @@ export default function BasicDemo() {
 
   const [initialBlocks] = useState(() => loadBlocksFromLocalStorage(STORAGE_KEY));
   const [isEdit, setIsEdit] = useState(true);
+  const [selectedTheme, setSelectedTheme] = useState('default');
+
+  const themeConfig = useMemo(
+    () => resolveDemoBlockBuilderTheme(selectedTheme),
+    [selectedTheme]
+  );
+
+  useEffect(() => {
+    applyDemoGlassBodyClass(themeConfig.glass);
+    return () => applyDemoGlassBodyClass(false);
+  }, [themeConfig.glass]);
 
   const handleSave = async (blocks: unknown[]) => {
     const result = saveBlocksToLocalStorage(STORAGE_KEY, blocks);
@@ -94,18 +108,40 @@ export default function BasicDemo() {
           <p className="demo-description">
             Полноценное демо с React-компонентами BlockBuilder (@mushket-co/block-builder/react)
           </p>
-          <div className="demo-badges">
-            <span className="badge">React 19+</span>
-            <span className="badge">api-select</span>
-            <span className="badge">custom fields</span>
+          <div className="demo-header-controls">
+            <div className="demo-theme-picker">
+              <span className="demo-theme-picker__label">Тема UI BlockBuilder</span>
+              <div className="demo-theme-toggle" role="group" aria-labelledby="demo-theme-label-react">
+                <span id="demo-theme-label-react" className="sr-only">
+                  Выбор темы
+                </span>
+                {DEMO_THEME_OPTIONS.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`demo-theme-toggle__btn${
+                      selectedTheme === option.id ? ' demo-theme-toggle__btn--active' : ''
+                    }`}
+                    onClick={() => setSelectedTheme(option.id)}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="demo-mode-picker">
+              <span className="demo-theme-picker__label">Режим BlockBuilder</span>
+              <button type="button" className="demo-mode-btn" onClick={() => setIsEdit((v) => !v)}>
+                {isEdit ? 'Редактирование' : 'Просмотр'}
+              </button>
+            </div>
           </div>
-          <button type="button" className="mode-btn" onClick={() => setIsEdit((v) => !v)}>
-            Режим: {isEdit ? 'редактирование' : 'просмотр'}
-          </button>
         </div>
       </div>
-      <div className="demo-content">
+      <div className={`demo-content${themeConfig.glass ? ' builder-shell--glass' : ''}`}>
         <BlockBuilderComponent
+          theme={themeConfig.theme}
+          themeVars={themeConfig.themeVars}
           config={{ availableBlockTypes }}
           blockManagementUseCase={blockManagementUseCase}
           apiSelectUseCase={apiSelectUseCase}
@@ -126,10 +162,6 @@ export default function BasicDemo() {
         .demo-title { font-size: 2.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem; }
         .title-icon { font-size: 2.5rem; }
         .demo-description { color: var(--text-secondary); font-size: 1.125rem; margin-bottom: 1rem; }
-        .demo-badges { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; }
-        .badge { padding: 0.375rem 0.875rem; background: var(--accent-light); color: var(--accent-primary); border-radius: 20px; font-size: 0.875rem; font-weight: 500; }
-        .mode-btn { padding: 0.5rem 1.25rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-secondary); color: var(--text-primary); cursor: pointer; font-weight: 500; }
-        .mode-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
         .demo-content { flex: 1; padding: 1rem 0 2rem; }
       `}</style>
     </div>

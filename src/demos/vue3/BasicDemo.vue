@@ -9,15 +9,36 @@
         <p class="demo-description">
           Полноценное демо с использованием настоящих Vue 3 компонентов BlockBuilder
         </p>
-        <div class="demo-badges">
-          <span class="badge">Vue 3</span>
-          <span class="badge">TypeScript</span>
-          <span class="badge">Composition API</span>
+        <div class="demo-header-controls">
+          <div class="demo-theme-picker">
+            <span class="demo-theme-picker__label">Тема UI BlockBuilder</span>
+            <div class="demo-theme-toggle" role="group" aria-labelledby="demo-theme-label-vue">
+              <span id="demo-theme-label-vue" class="sr-only">Выбор темы</span>
+              <button
+                v-for="option in themeOptions"
+                :key="option.id"
+                type="button"
+                class="demo-theme-toggle__btn"
+                :class="{ 'demo-theme-toggle__btn--active': selectedTheme === option.id }"
+                @click="selectedTheme = option.id"
+              >
+                {{ option.label }}
+              </button>
+            </div>
+          </div>
+          <div class="demo-mode-picker">
+            <span class="demo-theme-picker__label">Режим BlockBuilder</span>
+            <button type="button" class="demo-mode-btn" @click="isEdit = !isEdit">
+              {{ isEdit ? 'Редактирование' : 'Просмотр' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="demo-content">
-      <BlockBuilderComponent 
+    <div class="demo-content" :class="{ 'builder-shell--glass': themeConfig.glass }">
+      <BlockBuilderComponent
+        :theme="themeConfig.theme"
+        :theme-vars="themeConfig.themeVars"
         :config="{ availableBlockTypes }"
         :block-management-use-case="blockManagementUseCase"
         :api-select-use-case="apiSelectUseCase"
@@ -35,12 +56,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { 
+import { computed, onUnmounted, ref, watch } from 'vue';
+import {
   BlockBuilderComponent,
   createBlockManagementUseCase,
   ApiSelectUseCase,
-  CustomFieldRendererRegistry
+  CustomFieldRendererRegistry,
 } from '@mushket-co/block-builder/vue';
 import { DemoHttpClient } from '../../api/demoApiMock';
 import { blockConfigs as rawBlockConfigs } from './block-config.js';
@@ -49,23 +70,25 @@ import {
   loadBlocksFromLocalStorage,
   saveBlocksToLocalStorage,
 } from '../shared/blockStorage';
+import {
+  applyDemoGlassBodyClass,
+  DEMO_THEME_OPTIONS,
+  resolveDemoBlockBuilderTheme,
+} from '../shared/blockBuilderTheme.js';
 import { WysiwygFieldRenderer } from './customFieldRenderers/WysiwygFieldRenderer';
 import { FormScopeDemoFieldRenderer } from '../shared/formFeaturesDemoFieldRenderer.js';
 
 const STORAGE_KEY = 'saved-blocks-demo';
-// В dev mock-api отдаёт /api/upload; на Vercel — клиентский data URL без uploadUrl.
 const blockConfigs = import.meta.env.PROD
   ? applyClientSideImageUpload(rawBlockConfigs)
   : rawBlockConfigs;
 
-// Создаем use cases
 const blockManagementUseCase = createBlockManagementUseCase();
 const apiSelectUseCase = new ApiSelectUseCase(new DemoHttpClient());
 const customFieldRendererRegistry = new CustomFieldRendererRegistry();
 customFieldRendererRegistry.register(new WysiwygFieldRenderer());
 customFieldRendererRegistry.register(new FormScopeDemoFieldRenderer());
 
-// Регистрируем компоненты блоков
 const componentRegistry = blockManagementUseCase.getComponentRegistry();
 Object.entries(blockConfigs).forEach(([type, config]) => {
   if (config.render?.component) {
@@ -73,34 +96,47 @@ Object.entries(blockConfigs).forEach(([type, config]) => {
   }
 });
 
-// Формируем availableBlockTypes из конфигураций
 const availableBlockTypes = ref(
   Object.entries(blockConfigs).map(([type, cfg]) => {
-    const defaultProps: Record<string, any> = {};
+    const defaultProps: Record<string, unknown> = {};
     if (cfg.fields) {
       cfg.fields.forEach((field) => {
         defaultProps[field.field] = field.defaultValue;
       });
     }
-    
+
     return {
       type,
       label: cfg.title,
       icon: cfg.icon,
       render: cfg.render,
       fields: cfg.fields,
-      ...((cfg as any).spacingOptions && { spacingOptions: (cfg as any).spacingOptions }),
+      ...((cfg as { spacingOptions?: unknown }).spacingOptions && {
+        spacingOptions: (cfg as { spacingOptions?: unknown }).spacingOptions,
+      }),
       defaultSettings: {},
-      defaultProps
+      defaultProps,
     };
   })
 );
 
 const isEdit = ref(true);
+const selectedTheme = ref('default');
+const themeOptions = DEMO_THEME_OPTIONS;
+
+const themeConfig = computed(() => resolveDemoBlockBuilderTheme(selectedTheme.value));
+
+watch(
+  () => themeConfig.value.glass,
+  (glass) => applyDemoGlassBodyClass(glass),
+  { immediate: true }
+);
+
+onUnmounted(() => applyDemoGlassBodyClass(false));
 
 const initialBlocks = ref(loadBlocksFromLocalStorage(STORAGE_KEY));
 
-const handleSave = async (blocks: any[]) => {
+const handleSave = async (blocks: unknown[]) => {
   const result = saveBlocksToLocalStorage(STORAGE_KEY, blocks);
 
   if (!result.ok) {
@@ -153,7 +189,8 @@ const handleSave = async (blocks: any[]) => {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -170,44 +207,19 @@ const handleSave = async (blocks: any[]) => {
   margin-right: auto;
 }
 
-.demo-badges {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  background: var(--accent-light);
-  color: var(--accent-primary);
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: 1px solid var(--border-color);
-  transition: all 0.2s ease;
-}
-
-.badge:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
-}
-
 @media (max-width: 768px) {
   .demo-header {
     padding: 2rem 1rem;
   }
-  
+
   .demo-title {
     font-size: 2rem;
   }
-  
+
   .title-icon {
     font-size: 2rem;
   }
-  
+
   .demo-description {
     font-size: 1rem;
   }

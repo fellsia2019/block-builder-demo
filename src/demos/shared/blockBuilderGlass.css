@@ -1,0 +1,205 @@
+/* Frosted glass shell for demo-bb custom theme (backdrop-filter is app-level CSS). */
+
+/* Dark page backdrop when BB custom (glass) theme is active — header keeps site theme colors */
+body.bb-demo-glass-theme {
+  background: #0a1218;
+}
+
+/* Theme picker lives in light/dark site header — never inherit glass body text colors */
+.demo-header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.demo-header .demo-theme-picker,
+.demo-header .demo-mode-picker {
+  background: var(--card-bg);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.demo-header .demo-theme-picker__label {
+  color: var(--text-secondary);
+}
+
+.demo-header .demo-theme-toggle {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+}
+
+.demo-header .demo-theme-toggle__btn {
+  color: var(--text-primary);
+  opacity: 0.72;
+}
+
+.demo-header .demo-theme-toggle__btn:hover {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+.demo-header .demo-theme-toggle__btn--active {
+  opacity: 1;
+  background: var(--card-bg);
+  color: var(--accent-primary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.demo-header .demo-mode-btn {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.demo-header .demo-mode-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.demo-theme-picker,
+.demo-mode-picker {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem 0.65rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  min-height: 4.5rem;
+}
+
+.demo-mode-btn {
+  padding: 0.45rem 1.1rem;
+  min-width: 9.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.demo-mode-btn:hover {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.demo-theme-picker__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.demo-theme-toggle {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.25rem;
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  margin-top: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.demo-theme-toggle__btn {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  opacity: 0.75;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.demo-theme-toggle__btn:hover {
+  opacity: 1;
+  color: var(--text-primary);
+}
+
+.demo-theme-toggle__btn--active {
+  opacity: 1;
+  background: var(--card-bg);
+  color: var(--accent-primary);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.builder-shell--glass {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: 0 1rem 2rem;
+  background:
+    radial-gradient(circle at 14% 20%, rgba(0, 227, 255, 0.35), transparent 42%),
+    radial-gradient(circle at 86% 14%, rgba(56, 189, 248, 0.28), transparent 38%),
+    radial-gradient(circle at 70% 88%, rgba(14, 165, 233, 0.22), transparent 40%),
+    linear-gradient(145deg, #0c1220 0%, #111827 45%, #0f172a 100%);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+}
+
+.builder-shell--glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+.builder-shell--glass .bb-app {
+  background: transparent;
+}
+
+.builder-shell--glass .bb-app .bb-controls-inner,
+.builder-shell--glass .bb-app .bb-modal-content,
+.builder-shell--glass .bb-app .bb-modal-header,
+.builder-shell--glass .bb-app .bb-modal-footer,
+.builder-shell--glass .bb-app .bb-repeater-control__item,
+.builder-shell--glass .bb-app .bb-form-control,
+.builder-shell--glass .bb-app .bb-dropdown__control,
+.builder-shell--glass .bb-app .bb-block-controls-inner {
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.builder-shell--glass .bb-app .bb-control-btn {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.builder-shell--glass .bb-app .bb-control-btn:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+body.bb-demo-glass-theme .bb-dropdown__panel {
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}

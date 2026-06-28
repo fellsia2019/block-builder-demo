@@ -1,5 +1,6 @@
 // Импортируем глобальные стили
 import './styles/theme.css';
+import './demos/shared/blockBuilderGlass.css';
 import { createNavBar } from './components/NavBar';
 
 // Главный роутер для демо
